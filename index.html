@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>A*</title>
+  <script src = "script A-star.js"></script>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <label for="input">Введите значение</label>
+  <input type="number" id="input" min="2" max="30">
+  <button onclick="createTable()">Сделать таблицу</button>
+  <button onclick="operationLet()">Препятствие</button>
+  <button onclick="operationStart()">Старт</button>
+  <button onclick="operationFinish()">Финиш</button>
+  <button onclick="findAWay()">Найти путь</button>
+  <!-- <button onclick="">Очистить карту от путей</button>
+  <button onclick="">Очистить карту от всего</button> -->
+  <button value="Refresh Page" onClick="window.location.reload();">Сбросить все</button>
+  <div id="table-container"></div>
+</body>
+</html>
