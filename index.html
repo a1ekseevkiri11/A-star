@@ -10,14 +10,13 @@
 </head>
 <body>
   <label for="input">Введите значение</label>
-  <input type="number" id="input" min="2" max="30">
+  <input type="number" id="input" min="2" max="50">
   <button onclick="createTable()">Сделать таблицу</button>
   <button onclick="operationLet()">Препятствие</button>
   <button onclick="operationStart()">Старт</button>
   <button onclick="operationFinish()">Финиш</button>
   <button onclick="findAWay()">Найти путь</button>
-  <!-- <button onclick="">Очистить карту от путей</button>
-  <button onclick="">Очистить карту от всего</button> -->
+  <button onclick="clearTheMatrixOfPaths()">Очистить карту от путей</button>
   <button value="Refresh Page" onClick="window.location.reload();">Сбросить все</button>
   <div id="table-container"></div>
 </body>

@@ -1,5 +1,13 @@
-let n;//n - размер матрицы
-let color_flag = "black";
+//n - размер матрицы
+
+const starting_flag_color = "green";
+const finish_flag_color = "red";
+const path_color = "blue";
+const obstacle_color = "black";
+const matrix_color = "white";
+
+
+let color_flag = obstacle_color;
 let starting_flag = false, finish_flag = false, diagonal = true;
 let start_coordinates = null, finish_coordinates = null;
 
@@ -11,44 +19,45 @@ class Coordinates {
 }
 
 function operationLet(){
-  color_flag = "black";
+  color_flag = obstacle_color;
 }
 
 function operationStart(){
-  color_flag = "green";
+  color_flag = starting_flag_color;
 }
 
 function operationFinish(){
-  color_flag = "red";
+  color_flag = finish_flag_color;
 }
 
 function getColor(color) {
-  if(color === "red"){
+  if(color === finish_flag_color){
     finish_flag = false;
-    return "white";
+    return matrix_color;
   }
-  if(color === "green"){
+  if(color === starting_flag_color){
     starting_flag = false;
-    return "white";
+    return matrix_color;
   }
-  if(color_flag === "red" && finish_flag === false){
+  if(color_flag === finish_flag_color && finish_flag === false){
     finish_flag = true;
     return color_flag;
   }
-  if(color_flag === "green" && starting_flag === false){
+  if(color_flag === starting_flag_color && starting_flag === false){
     starting_flag = true;
     return color_flag;
   }
-  if(color !== "black" && color_flag === "black"){
+  if(color !== obstacle_color && color_flag === obstacle_color){
     return color_flag;
   }
-  return "white";
+  return matrix_color;
 }
 
 function createTable() {
-  n = document.getElementById("input").value;
-  if(n < 2 | n > 30 | !n){
-    alert("Введите число от 2 до 30")
+  starting_flag = false, finish_flag = false;
+  let n = document.getElementById("input").value;
+  if(n < 2 | n > 50 | !n){
+    alert("Введите число от 2 до 50")
     return;
   }
   let container = document.getElementById("table-container");
@@ -57,7 +66,7 @@ function createTable() {
     let row = document.createElement("tr");
     for (let j = 0; j < n; j++){
       let cell = document.createElement("td");
-      cell.style.backgroundColor = "white";
+      cell.style.backgroundColor = matrix_color;
       cell.addEventListener("click", function() {
         let color = this.style.backgroundColor;
         cell.style.backgroundColor = getColor(color);
@@ -70,20 +79,22 @@ function createTable() {
   container.appendChild(table);
 }
 
-function matrixCreation(){
+
+function createMatrix(){
+  let n = document.getElementById("input").value;
   let matrix = [];
   let container = document.getElementById("table-container");
   let table = container.querySelector("table");
   for (let i = 0; i < n; i++){
     let row = [];
     for(let j = 0; j < n; j++){
-      if(table.rows[i].cells[j].style.backgroundColor === "green"){
+      if(table.rows[i].cells[j].style.backgroundColor === starting_flag_color){
         start_coordinates = new Coordinates(i, j);
       }
-      if(table.rows[i].cells[j].style.backgroundColor === "red"){
+      if(table.rows[i].cells[j].style.backgroundColor === finish_flag_color){
         finish_coordinates = new Coordinates(i, j);
       }
-      if (table.rows[i].cells[j].style.backgroundColor !== "black"){
+      if (table.rows[i].cells[j].style.backgroundColor !== obstacle_color){
         row[j] = 1;
       }
       else{
@@ -95,8 +106,28 @@ function matrixCreation(){
   return matrix;
 }
 
+function clearTheMatrixOfPaths(){
+  start_coordinates = null, finish_coordinates = null;
+  let n = document.getElementById("input").value;
+  let container = document.getElementById("table-container");
+  if (!container){
+    return;
+  }
+  let table = container.querySelector("table");
+  for (let i = 0; i < n; i++) {
+    for (let j = 0; j < n; j++){
+      if(table.rows[i].cells[j].style.backgroundColor === path_color){
+        table.rows[i].cells[j].style.backgroundColor = matrix_color;
+      }
+    }
+  }
+  container.innerHTML = "";
+  container.appendChild(table);
+}
+
 function findAWay(){
-  let matrix = matrixCreation();
+  clearTheMatrixOfPaths();
+  let matrix = createMatrix();
   if (!matrix || !start_coordinates || !finish_coordinates){
     alert("Введите ВСЕ значения!")
     return;
@@ -112,12 +143,11 @@ function findAWay(){
   let container = document.getElementById("table-container");
   let table = container.querySelector("table");
   for (let i = 0; i < result.length - 1; i++){
-    table.rows[result[i].x].cells[result[i].y].style.backgroundColor = "blue";
+    table.rows[result[i].x].cells[result[i].y].style.backgroundColor = path_color;
   }
   container.innerHTML = "";
   container.appendChild(table);
 }
-
 
 (function(definition) {
   let exports = definition();
@@ -140,7 +170,9 @@ function getHeap() {
   });
 }
 let aStar = {
-  search: function(graph, start, end, options) {
+  //метод search возвращает самый короткий путь
+  search: 
+  function(graph, start, end, options) {
     graph.cleanDirty();
     options = options || {};
     let heuristic = options.heuristic || aStar.heuristics.manhattan;
@@ -195,13 +227,6 @@ let aStar = {
       let d1 = Math.abs(pos1.x - pos0.x);
       let d2 = Math.abs(pos1.y - pos0.y);
       return d1 + d2;
-    },
-    diagonal: function(pos0, pos1) {
-      let D = 1;
-      let D2 = Math.sqrt(2);
-      let d1 = Math.abs(pos1.x - pos0.x);
-      let d2 = Math.abs(pos1.y - pos0.y);
-      return (D * (d1 + d2)) + ((D2 - (2 * D)) * Math.min(d1, d2));
     }
   },
   cleanNode: function(node) {
@@ -220,7 +245,6 @@ function Graph(gridIn, options) {
   this.grid = [];
   for (let x = 0; x < gridIn.length; x++) {
     this.grid[x] = [];
-
     for (let y = 0, row = gridIn[x]; y < row.length; y++) {
       let node = new GridNode(x, y, row[y]);
       this.grid[x][y] = node;
@@ -278,42 +302,24 @@ Graph.prototype.neighbors = function(node) {
   return return_neighbors;
 };
 
-Graph.prototype.toString = function() {
-  let graphString = [];
-  let nodes = this.grid;
-  for (let x = 0; x < nodes.length; x++) {
-    let rowDebug = [];
-    let row = nodes[x];
-    for (let y = 0; y < row.length; y++) {
-      rowDebug.push(row[y].weight);
-    }
-    graphString.push(rowDebug.join(" "));
-  }
-  return graphString.join("\n");
-};
-
 function GridNode(x, y, weight) {
   this.x = x;
   this.y = y;
   this.weight = weight;
 }
-
 GridNode.prototype.getCost = function(fromNeighbor) {
   if (fromNeighbor && fromNeighbor.x != this.x && fromNeighbor.y != this.y) {
     return this.weight * 1.41421;
   }
   return this.weight;
 };
-
 GridNode.prototype.isWall = function() {
   return this.weight === 0;
 };
-
 function BinaryHeap(scoreFunction) {
   this.content = [];
   this.scoreFunction = scoreFunction;
 }
-
 BinaryHeap.prototype = {
   push: function(element) {
     this.content.push(element);
@@ -365,7 +371,6 @@ BinaryHeap.prototype = {
     let length = this.content.length;
     let element = this.content[n];
     let elemScore = this.scoreFunction(element);
-
     while (true) {
       let child2N = (n + 1) << 1;
       let child1N = child2N - 1;
