@@ -1,11 +1,24 @@
-td 
-{
-	border: 2px solid #000000;
-	padding: 20px;
+html{
+	margin:0;
+	padding: 0;
+	height: 100%;
+	width: 100%;
 }
 
-#table-container 
-{
-	margin: 50px auto;
-	width: 200px;
+body{
+	margin:0;
+	padding: 0;
+	height: 100%;
+	width: 100%;
+}
+
+
+#table{
+    padding-left: 200px;
+    padding-top: 50px;
+}
+
+#inputs_data{
+    padding-left: 200px;
+    padding-top: 50px;
 }

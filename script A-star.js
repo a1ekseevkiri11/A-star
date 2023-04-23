@@ -1,408 +1,267 @@
-//n - размер матрицы
-
 const starting_flag_color = "green";
 const finish_flag_color = "red";
 const path_color = "blue";
 const obstacle_color = "black";
 const matrix_color = "white";
+const motion_animation_color = "Gray";
+const passed_cells_color = "#cdcdcd";
 
 
-let color_flag = obstacle_color;
-let starting_flag = false, finish_flag = false, diagonal = true;
-let start_coordinates = null, finish_coordinates = null;
+const canvas = document.querySelector("canvas");
+const plane = canvas.getContext("2d");
+const size_matrix = 800;
 
-class Coordinates {
-  constructor(x, y) {
-    this.x = x;
-    this.y = y;
-  }
-}
 
-function operationLet(){
-  color_flag = obstacle_color;
-}
+let n;
+let cell_size;//размер ячейки(клеточки)
+let matrix;
+let start = [-1, -1];
+let finish = [-1, -1];
 
-function operationStart(){
-  color_flag = starting_flag_color;
-}
-
-function operationFinish(){
-  color_flag = finish_flag_color;
-}
-
-function getColor(color) {
-  if(color === finish_flag_color){
-    finish_flag = false;
-    return matrix_color;
-  }
-  if(color === starting_flag_color){
-    starting_flag = false;
-    return matrix_color;
-  }
-  if(color_flag === finish_flag_color && finish_flag === false){
-    finish_flag = true;
-    return color_flag;
-  }
-  if(color_flag === starting_flag_color && starting_flag === false){
-    starting_flag = true;
-    return color_flag;
-  }
-  if(color !== obstacle_color && color_flag === obstacle_color){
-    return color_flag;
-  }
-  return matrix_color;
-}
-
-function createTable() {
-  starting_flag = false, finish_flag = false;
-  let n = document.getElementById("input").value;
-  if(n < 2 | n > 50 | !n){
-    alert("Введите число от 2 до 50")
-    return;
-  }
-  let container = document.getElementById("table-container");
-  let table = document.createElement("table");
-  for (let i = 0; i < n; i++) {
-    let row = document.createElement("tr");
-    for (let j = 0; j < n; j++){
-      let cell = document.createElement("td");
-      cell.style.backgroundColor = matrix_color;
-      cell.addEventListener("click", function() {
-        let color = this.style.backgroundColor;
-        cell.style.backgroundColor = getColor(color);
-      });
-      row.appendChild(cell);
+function createMap(){
+    n = document.getElementById("input").value;
+    if(n < 2 | n > 30 | !n){
+        alert("Введите число от 2 до 30")
+        return;
     }
-    table.appendChild(row);
-  }
-  container.innerHTML = "";
-  container.appendChild(table);
-}
-
-
-function createMatrix(){
-  let n = document.getElementById("input").value;
-  let matrix = [];
-  let container = document.getElementById("table-container");
-  let table = container.querySelector("table");
-  for (let i = 0; i < n; i++){
-    let row = [];
-    for(let j = 0; j < n; j++){
-      if(table.rows[i].cells[j].style.backgroundColor === starting_flag_color){
-        start_coordinates = new Coordinates(i, j);
-      }
-      if(table.rows[i].cells[j].style.backgroundColor === finish_flag_color){
-        finish_coordinates = new Coordinates(i, j);
-      }
-      if (table.rows[i].cells[j].style.backgroundColor !== obstacle_color){
-        row[j] = 1;
-      }
-      else{
-        row[j] = 0;
-      }
+    matrix = getMatrix(0);
+    plane.clearRect(0, 0, size_matrix, size_matrix);
+    plane.beginPath();
+    cell_size = size_matrix / n;
+    let x = 0;
+    let y = 0;
+    for (let i = 0; i <= n; i++){
+        plane.moveTo(x, 0);
+        plane.lineTo(x, cell_size * n);
+        x += cell_size;
     }
-    matrix[i] = row;
-  }
-  return matrix;
-}
 
-function clearTheMatrixOfPaths(){
-  start_coordinates = null, finish_coordinates = null;
-  let n = document.getElementById("input").value;
-  let container = document.getElementById("table-container");
-  if (!container){
-    return;
-  }
-  let table = container.querySelector("table");
-  for (let i = 0; i < n; i++) {
-    for (let j = 0; j < n; j++){
-      if(table.rows[i].cells[j].style.backgroundColor === path_color){
-        table.rows[i].cells[j].style.backgroundColor = matrix_color;
-      }
+    for (let i = 0; i <= n; i++){
+        plane.moveTo(0, y);
+        plane.lineTo(cell_size * n, y);
+        y += cell_size;
     }
-  }
-  container.innerHTML = "";
-  container.appendChild(table);
+
+    plane.stroke();
+    canvas.addEventListener("click", Click);
+
+    document.getElementById("walls").onclick = function(){oper = 0;};
+    document.getElementById("start").onclick = function(){oper = 1;};
+    document.getElementById("finish").onclick = function(){oper = 2;};
 }
 
-function findAWay(){
-  clearTheMatrixOfPaths();
-  let matrix = createMatrix();
-  if (!matrix || !start_coordinates || !finish_coordinates){
-    alert("Введите ВСЕ значения!")
-    return;
-  }
-  let graph = new Graph(matrix);
-  let start = graph.grid[start_coordinates.x][start_coordinates.y];
-  let end = graph.grid[finish_coordinates.x][finish_coordinates.y];
-  let result = aStar.search(graph, start, end);
-  if(result.length === 0){
-    alert("Пути нет!");
-    return;
-  }
-  let container = document.getElementById("table-container");
-  let table = container.querySelector("table");
-  for (let i = 0; i < result.length - 1; i++){
-    table.rows[result[i].x].cells[result[i].y].style.backgroundColor = path_color;
-  }
-  container.innerHTML = "";
-  container.appendChild(table);
-}
-
-(function(definition) {
-  let exports = definition();
-  aStar = exports.aStar;
-  Graph = exports.Graph;
-})
-(function() {
-function pathTo(node) {
-  let curr = node;
-  let path = [];
-  while (curr.parent) {
-    path.unshift(curr);
-    curr = curr.parent;
-  }
-  return path;
-}
-function getHeap() {
-  return new BinaryHeap(function(node) {
-    return node.f;
-  });
-}
-let aStar = {
-  //метод search возвращает самый короткий путь
-  search: 
-  function(graph, start, end, options) {
-    graph.cleanDirty();
-    options = options || {};
-    let heuristic = options.heuristic || aStar.heuristics.manhattan;
-    let closest = options.closest || false;
-    let openHeap = getHeap();
-    let closestNode = start; 
-    start.h = heuristic(start, end);
-    graph.markDirty(start);
-    openHeap.push(start);
-    while (openHeap.size() > 0) {
-      let currentNode = openHeap.pop();
-      if (currentNode === end) {
-        return pathTo(currentNode);
-      }
-      currentNode.closed = true;
-      let neighbors = graph.neighbors(currentNode);
-      for (let i = 0, il = neighbors.length; i < il; ++i) {
-        let neighbor = neighbors[i];
-        if (neighbor.closed || neighbor.isWall()) {
-          continue;
+function getMatrix(count) {
+    let matrix = new Array(n);
+    for (let i = 0; i < n; i++)
+    {
+        matrix[i] = new Array(n);
+        for (let j = 0; j < n; j++)
+        {
+            matrix[i][j] = count;
         }
-        let gScore = currentNode.g + neighbor.getCost(currentNode);
-        let beenVisited = neighbor.visited;
-        if (!beenVisited || gScore < neighbor.g) {
-          neighbor.visited = true;
-          neighbor.parent = currentNode;
-          neighbor.h = neighbor.h || heuristic(neighbor, end);
-          neighbor.g = gScore;
-          neighbor.f = neighbor.g + neighbor.h;
-          graph.markDirty(neighbor);
-          if (closest) {
-            if (neighbor.h < closestNode.h || (neighbor.h === closestNode.h && neighbor.g < closestNode.g)) {
-              closestNode = neighbor;
+    }
+    return matrix;
+}
+
+function Click(event){
+    let RightX = event.pageX - event.target.offsetLeft;//относительные координаты
+    let RightY = event.pageY - event.target.offsetTop;
+    //j - это x ,а i - y, потому что в канвас координаты такие:https://msiter.ru/tutorials/html5-canvas/coordinates
+    let j = Math.floor(RightX / cell_size);
+    let i = Math.floor(RightY / cell_size);
+    let cellX = j * cell_size;
+    let cellY = i * cell_size;
+    switch(oper){
+        case 0:
+            if (start[0] === i && start[1] === j){
+                start = [-1, -1];
             }
-          }
-          if (!beenVisited) {
-            openHeap.push(neighbor);
-          } 
-          else {
-            openHeap.rescoreElement(neighbor);
-          }
-        }
-      }
-    }
-    if (closest) {
-      return pathTo(closestNode);
-    }
-    return [];
-  },
-  heuristics: {
-    manhattan: function(pos0, pos1) {
-      let d1 = Math.abs(pos1.x - pos0.x);
-      let d2 = Math.abs(pos1.y - pos0.y);
-      return d1 + d2;
-    }
-  },
-  cleanNode: function(node) {
-    node.f = 0;
-    node.g = 0;
-    node.h = 0;
-    node.visited = false;
-    node.closed = false;
-    node.parent = null;
-  }
-};
-function Graph(gridIn, options) {
-  options = options || {};
-  this.nodes = [];
-  this.diagonal = !!options.diagonal;
-  this.grid = [];
-  for (let x = 0; x < gridIn.length; x++) {
-    this.grid[x] = [];
-    for (let y = 0, row = gridIn[x]; y < row.length; y++) {
-      let node = new GridNode(x, y, row[y]);
-      this.grid[x][y] = node;
-      this.nodes.push(node);
-    }
-  }
-  this.init();
-}
-Graph.prototype.init = function() {
-  this.dirtyNodes = [];
-  for (let i = 0; i < this.nodes.length; i++) {
-    aStar.cleanNode(this.nodes[i]);
-  }
-};
-Graph.prototype.cleanDirty = function() {
-  for (let i = 0; i < this.dirtyNodes.length; i++) {
-    aStar.cleanNode(this.dirtyNodes[i]);
-  }
-  this.dirtyNodes = [];
-};
-Graph.prototype.markDirty = function(node) {
-  this.dirtyNodes.push(node);
-};
-Graph.prototype.neighbors = function(node) {
-  let return_neighbors = [];
-  let x = node.x;
-  let y = node.y;
-  let grid = this.grid;
-  if (grid[x - 1] && grid[x - 1][y]) {
-    return_neighbors.push(grid[x - 1][y]);
-  }
-  if (grid[x + 1] && grid[x + 1][y]) {
-    return_neighbors.push(grid[x + 1][y]);
-  }
-  if (grid[x] && grid[x][y - 1]) {
-    return_neighbors.push(grid[x][y - 1]);
-  }
-  if (grid[x] && grid[x][y + 1]) {
-    return_neighbors.push(grid[x][y + 1]);
-  }
-  if (diagonal) {
-    if (grid[x - 1] && grid[x - 1][y - 1]) {
-      return_neighbors.push(grid[x - 1][y - 1]);
-    }
-    if (grid[x + 1] && grid[x + 1][y - 1]) {
-      return_neighbors.push(grid[x + 1][y - 1]);
-    }
-    if (grid[x - 1] && grid[x - 1][y + 1]) {
-      return_neighbors.push(grid[x - 1][y + 1]);
-    }
-    if (grid[x + 1] && grid[x + 1][y + 1]) {
-      return_neighbors.push(grid[x + 1][y + 1]);
-    }
-  }
-  return return_neighbors;
-};
+            if (finish[0] === i && finish[1] === j){
+                finish = [-1, -1];
+            }
+            if (matrix[i][j]){
+                matrix[i][j] = 0;
+                plane.fillStyle = matrix_color;
+                plane.fillRect(cellX + 0.5 , cellY + 0.5, cell_size - 1, cell_size - 1);
+            }
+            else{
+                matrix[i][j] = 1;
+                plane.fillStyle = obstacle_color;
+                plane.fillRect(cellX, cellY, cell_size, cell_size);
+            }
+            break;
 
-function GridNode(x, y, weight) {
-  this.x = x;
-  this.y = y;
-  this.weight = weight;
+        case 1:
+            if (matrix[i][j]){
+                matrix[i][j] = 0;
+                plane.fillStyle=matrix_color;
+                plane.fillRect(CellX * cell_size + 0.5, CellY * cell_size + 0.5, cell_size - 1, cell_size - 1);
+            }
+            if (JSON.stringify(start) !== JSON.stringify([-1, -1])){
+                plane.fillStyle=matrix_color;
+                plane.fillRect(start[1] * cell_size + 0.5, start[0] * cell_size + 0.5, cell_size - 1, cell_size - 1);
+            }
+            if (JSON.stringify([i, j]) === JSON.stringify(finish)){
+                plane.fillStyle=matrix_color;
+                plane.fillRect(finish[1] * cell_size + 0.5, finish[0] * cell_size + 0.5, cell_size - 1, cell_size - 1);
+                finish = [-1, -1];
+            }
+            plane.fillStyle=starting_flag_color;
+            plane.fillRect(cellX + 0.5, cellY + 0.5, cell_size - 1, cell_size - 1);
+            start[0] = i;
+            start[1] = j;
+            break;
+
+        case 2:
+            if (matrix[i][j]){
+                matrix[i][j] = 0;
+                plane.fillStyle = matrix_color;
+                plane.fillRect(cellX + 0.5 , cellY + 0.5, cell_size - 1, cell_size - 1);
+            }
+            if (JSON.stringify([i, j]) === JSON.stringify(start)){
+                plane.fillStyle=matrix_color;
+                plane.fillRect(start[1] * cell_size + 0.5, start[0] * cell_size * cell_size + 0.5, cell_size - 1, cell_size - 1);
+                start = [-1, -1];
+            }
+            if (JSON.stringify(finish) !== JSON.stringify([-1, -1])){
+                plane.fillStyle=matrix_color;
+                plane.fillRect(finish[1] * cell_size + 0.5, finish[0] * cell_size + 0.5, cell_size - 1, cell_size - 1);
+            }
+
+            plane.fillStyle=finish_flag_color;
+            plane.fillRect(cellX + 0.5, cellY + 0.5, cell_size - 1, cell_size - 1);
+            finish[0] = i;
+            finish[1] = j;
+            break;
+    }
 }
-GridNode.prototype.getCost = function(fromNeighbor) {
-  if (fromNeighbor && fromNeighbor.x != this.x && fromNeighbor.y != this.y) {
-    return this.weight * 1.41421;
-  }
-  return this.weight;
-};
-GridNode.prototype.isWall = function() {
-  return this.weight === 0;
-};
-function BinaryHeap(scoreFunction) {
-  this.content = [];
-  this.scoreFunction = scoreFunction;
+
+function Queue(){
+    let Set = [];
+    //Добавляем ячейку и расстояние
+    this.addTo = function(cell) {
+        if (this.isEmpty()) {
+            Set.push(cell);
+        }
+        else {
+            let fl = false;
+            for (let i = 0; i < Set.length; i++) {
+                if (cell[1] < Set[i][1])
+                {
+                    Set.splice(i, 0, cell);
+                    fl = true;
+                    break;
+                }
+            }
+            if (!fl) {
+                Set.push(cell);
+            }
+        }
+    }
+
+    this.takeFirst = function(){
+        return Set.shift();
+    }
+
+    this.isEmpty = function(){
+        return Set.length === 0;
+    }
 }
-BinaryHeap.prototype = {
-  push: function(element) {
-    this.content.push(element);
-    this.sinkDown(this.content.length - 1);
-  },
-  pop: function() {
-    let result = this.content[0];
-    let end = this.content.pop();
-    if (this.content.length > 0) {
-      this.content[0] = end;
-      this.bubbleUp(0);
+
+function heuristic(cur, finish){
+    return  Math.max(Math.abs(finish[0] - cur[0]),Math.abs(finish[1] - cur[1]));
+}
+
+function getNeigbors(cur, matrix, G) {
+    let neighbours = [];
+    let x = cur[0][0];
+    let y = cur[0][1];
+    if(y != n - 1 && !matrix[x][y + 1] && G[x][y + 1] === -1){
+        neighbours.push([x, y + 1]);
     }
-    return result;
-  },
-  remove: function(node) {
-    let i = this.content.indexOf(node);
-    let end = this.content.pop();
-    if (i !== this.content.length - 1) {
-      this.content[i] = end;
-      if (this.scoreFunction(end) < this.scoreFunction(node)) {
-        this.sinkDown(i);
-      } else {
-        this.bubbleUp(i);
-      }
+    if(x != n - 1 && !matrix[x + 1][y] && G[x + 1][y] === -1){
+        neighbours.push([x + 1, y]);
     }
-  },
-  size: function() {
-    return this.content.length;
-  },
-  rescoreElement: function(node) {
-    this.sinkDown(this.content.indexOf(node));
-  },
-  sinkDown: function(n) {
-    let element = this.content[n];
-    while (n > 0) {
-      let parentN = ((n + 1) >> 1) - 1;
-      let parent = this.content[parentN];
-      if (this.scoreFunction(element) < this.scoreFunction(parent)) {
-        this.content[parentN] = element;
-        this.content[n] = parent;
-        n = parentN;
-      }
-      else {
-        break;
-      }
+    if(x != 0 && !matrix[x - 1][y] && G[x - 1][y] === -1){
+        neighbours.push([x - 1, y]);
     }
-  },
-  bubbleUp: function(n) {
-    let length = this.content.length;
-    let element = this.content[n];
-    let elemScore = this.scoreFunction(element);
-    while (true) {
-      let child2N = (n + 1) << 1;
-      let child1N = child2N - 1;
-      let swap = null;
-      let child1Score;
-      if (child1N < length) {
-        let child1 = this.content[child1N];
-        child1Score = this.scoreFunction(child1);
-        if (child1Score < elemScore) {
-          swap = child1N;
+    if(y != 0 && !matrix[x][y - 1] && G[x][y - 1] === -1){
+        neighbours.push([x, y - 1]);
+    }
+    if(x > 0 && y > 0 && !matrix[x - 1][y - 1] && G[x - 1][y - 1] === -1){
+        neighbours.push([x - 1, y - 1]);
+    }
+    if(x < n - 1 && y < n - 1 && !matrix[x + 1][y + 1] && G[x + 1][y + 1] === -1){
+        neighbours.push([x + 1, y + 1]);
+    }
+    if(x > 0 && y < n - 1 && !matrix[x - 1][y + 1] && G[x - 1][y + 1] === -1){
+        neighbours.push([x - 1, y + 1]);
+    }
+    if(x < n - 1 && y > 0 && !matrix[x + 1][y - 1] && G[x + 1][y - 1] === -1){
+        neighbours.push([x + 1, y - 1]);
+    }
+    return neighbours;
+}
+
+//стрелочная функция ожидания
+async function wait() {
+    return new Promise(resolve => setTimeout(resolve, 200));
+}
+
+async function aStar(start, finish) {
+    let queue = new Queue();
+    let GScores = getMatrix(-1);
+    GScores[start[0]][start[1]] = 0;
+    let parents = [];//массив родителей(для окраски самого короткого пути)
+    for (let i = 0; i < n; i++){
+        parents[i] = new Array(n)
+        for (let j = 0; j < n; j++){
+            parents[i][j] = new Array(2);
+            parents[i][j][0] = -1;//координаты, дочерней клетки
+            parents[i][j][1] = -1;
         }
-      }
-      if (child2N < length) {
-        let child2 = this.content[child2N];
-        let child2Score = this.scoreFunction(child2);
-        if (child2Score < (swap === null ? elemScore : child1Score)) {
-          swap = child2N;
-        }
-      }
-      if (swap !== null) {
-        this.content[n] = this.content[swap];
-        this.content[swap] = element;
-        n = swap;
-      }
-      else {
-        break;
-      }
     }
-  }
-};
-return {
-  aStar: aStar,
-  Graph: Graph
-};
-});
+    queue.addTo([start, heuristic(start, finish)]);
+    while(!queue.isEmpty()){
+        let current = queue.takeFirst();
+        if (current[0][0] === finish[0] && current[0][1] === finish[1]){
+            break;
+        }
+        let neighbours = getNeigbors(current, matrix, GScores);
+        for (let i = 0; i < neighbours.length; i++){
+            let neigbor = neighbours[i];
+            plane.fillStyle = motion_animation_color;
+            plane.fillRect(neigbor[1] * cell_size + 1, neigbor[0] * cell_size + 1, cell_size - 1, cell_size - 1);
+            await wait();
+            plane.fillStyle = passed_cells_color;
+            plane.fillRect(neigbor[1] * cell_size + 1, neigbor[0] * cell_size + 1, cell_size - 1, cell_size - 1);
+            let nX = neigbor[0];
+            let nY = neigbor[1];
+            let cX = current[0][0];
+            let cY = current[0][1];
+            if (GScores[nX, nY] === -1 || GScores[cX][cY] + 1 > GScores[nX][nY]){
+                parents[nX][nY][0] = cX;
+                parents[nX][nY][1] = cY;
+                GScores[nX][nY] = GScores[cX][cY] + 1;
+                queue.addTo([neigbor, GScores[nX][nY] + heuristic(neigbor, finish)]);
+            }
+        }
+    }
+    plane.fillStyle = finish_flag_color;
+    plane.fillRect(finish[1] * cell_size, finish[0] * cell_size, cell_size - 1, cell_size - 1);
+
+    if (JSON.stringify(parents[finish[0]][finish[1]]) !== JSON.stringify([-1, -1])){
+        let cell = parents[finish[0]][finish[1]];
+        while (cell[0] !== -1 && cell[1] !== -1){
+            plane.fillStyle = path_color;
+            plane.fillRect(cell[1] * cell_size + 1, cell[0] * cell_size + 1, cell_size - 1, cell_size - 1);
+            cell = parents[cell[0]][cell[1]];
+        }
+        plane.fillStyle = starting_flag_color;
+        plane.fillRect(start[1] * cell_size, start[0] * cell_size, cell_size - 1, cell_size - 1);
+    }
+
+    else{
+        alert("Пути нет!");
+    }
+}
