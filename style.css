@@ -14,8 +14,9 @@ body{
 
 
 #table{
-    padding-left: 200px;
-    padding-top: 50px;
+	display: grid;
+	grid-template-columns: 350px 1fr;
+	grid-template-rows: 450px 1fr;
 }
 
 #inputs_data{
