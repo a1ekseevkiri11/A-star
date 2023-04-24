@@ -34,6 +34,21 @@ function fillInTheCell(x, y, color_flag){
     plane.fillRect(x + 1, y + 1, cell_size - 2, cell_size - 2);
 }
 
+function colorMap(){
+    start = [-1, -1];
+    finish = [-1, -1];
+    for(let i = 0; i < n; i++){
+        for (let j = 0; j < n; j++){
+            if(matrix[i][j] === 1){
+                fillInTheCell(j, i, obstacle_color);
+            }
+            else{
+                fillInTheCell(j, i, matrix_color);
+            }
+        }
+    }
+}
+
 function createTableMarkup() {
     start = [-1, -1];
     finish = [-1, -1];
@@ -57,9 +72,6 @@ function createTableMarkup() {
 }
 
 function clearMapOfPath(){
-    if (!matrix){
-        return;
-    }
     for (let i = 0; i < n; i++){
         for (let j = 0; j < n; j++){
             if (!matrix[i][j]){
@@ -70,7 +82,6 @@ function clearMapOfPath(){
     drawACircle(start[1], start[0], starting_flag_color);
     drawACircle(finish[1], finish[0], finish_flag_color);
 }
-
 
 function createMap() {
     n = document.getElementById("input").value;
@@ -92,9 +103,9 @@ function createMap() {
 }
 
 function getMatrix(count) {
-    let matrix = new Array(n);
+    let matrix = [];
     for (let i = 0; i < n; i++) {
-        matrix[i] = new Array(n);
+        matrix[i] = [];
         for (let j = 0; j < n; j++) {
             matrix[i][j] = count;
         }
@@ -161,6 +172,7 @@ function Click(event) {
             break;
     }
 }
+
 
 
 
@@ -235,7 +247,7 @@ function getNeigbors(cur, matrix, G) {
 
 async function aStar(start, finish) {
     
-    if ((JSON.stringify(start) === JSON.stringify([-1, -1])) || (JSON.stringify(finish) === JSON.stringify([-1, -1]))){
+    if ((JSON.stringify(start) === JSON.stringify([-1, -1])) || (JSON.stringify(finish) === JSON.stringify([-1, -1])) || !matrix){
         alert("Введите все данные!");
         return;
     }
@@ -294,4 +306,109 @@ async function aStar(start, finish) {
 //стрелочная функция ожидания
 async function wait() {
     return new Promise(resolve => setTimeout(resolve, 1000 / n));
+}
+
+
+function generateLabyrinth(){
+    if(!n){
+        alert("Создайте карту!");
+        return;
+    }
+    createTableMarkup();
+    map = getMatrix(1);
+	function isEven(n) {
+		return n % 2 === 0;
+	}
+	function getRandomFrom(array) {
+		const index = Math.floor(Math.random() * array.length);
+		return array[index];
+	}
+	const startX = getRandomFrom(Array(n).fill(0).map((item, index) => index).filter(x => isEven(x)));
+	const startY = getRandomFrom(Array(n).fill(0).map((item, index) => index).filter(x => isEven(x)));
+	var tractor = {};
+	tractor.x = startX;
+	tractor.y = startY;
+	function setField (x, y, value) {
+		if (x < 0 || x >= n || y < 0 || y >= n) {
+			return null;
+		};
+		map[x][y] = value;
+	}
+	setField(startX, startY, 0);
+	function isMaze () {
+		for (let x = 0; x < n; x++) {
+			for (let y = 0; y < n; y++) { 
+				if (isEven(x) && isEven(y) && getField(x, y) === 1) {
+					return false;
+				}
+			}
+		}
+		return true;
+	}
+	while (!isMaze()) {
+		moveTractor();
+	}
+    if(!matrix){
+        matrix = getMatrix(0);
+    }
+    for (let i = 0; i < n; i++){
+        for (let j = 0; j < n; j++){
+            matrix[i][j] = map[i][j];
+        }
+    }
+    colorMap();
+	return;
+	function getField(x, y) {
+		if (x < 0 || x >= n || y < 0 || y >= n) {
+			return null;
+		}
+		return map[x][y];
+	}
+	function moveTractor() {
+		const directs = [];
+		if (tractor.x > 0) {
+			directs.push('left');
+		};
+		if (tractor.x < n - 2) {
+			directs.push('right');
+		};	
+		if (tractor.y > 0) {
+			directs.push('up');
+		};
+		if (tractor.y < n - 2) {
+			directs.push('down');
+		};
+		const direct = getRandomFrom(directs);
+		switch (direct) {
+			case 'left':
+				if (getField(tractor.x - 2, tractor.y) === 1) {
+					setField(tractor.x - 1, tractor.y, 0);
+					setField(tractor.x - 2, tractor.y, 0);
+				};
+				tractor.x -= 2;
+				break;
+			case 'right':
+				if (getField(tractor.x + 2, tractor.y) === 1) {
+					setField(tractor.x + 1, tractor.y, 0);
+					setField(tractor.x + 2, tractor.y, 0);
+				};
+				tractor.x += 2;
+				break;
+			case 'up':
+				if (getField(tractor.x, tractor.y - 2) === 1) {
+					setField(tractor.x, tractor.y - 1, 0);
+					setField(tractor.x, tractor.y - 2, 0);
+				};
+				tractor.y -= 2
+				break;
+			case 'down':
+				if (getField(tractor.x, tractor.y + 2) === 1) {
+					setField(tractor.x, tractor.y + 1, 0);
+					setField(tractor.x, tractor.y + 2, 0);
+				};
+				tractor.y += 2;
+				break;
+		}
+	}
+
 }
