@@ -5,18 +5,28 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>A*</title>
-    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    <!-- <header>
+        <h1>A-star</h1>
+    </header> -->
     <div id = "inputs_data">
         <label for="input">Введите значение</label>
-        <input class="input" type="number" id="input" min="2" max="30">
+        <input id="input" type="number" min="2" max="30">
         <button id = "map" onclick = "createMap()">Создать карту</button>
         <button id = "walls">Препятствие</button>
         <button id = "start">Старт</button>
         <button id = "finish">Финиш</button>
         <button onclick="aStar(start, finish)">Найти путь</button>
         <button onclick="createTableMarkup()">Очистить карту</button>
+        <button onclick="clearMapOfPath()">Очистить карту от путей</button>
+        <form id = "choice_of_heuristics">
+            <label for="Manhattan">Манхэттенское расстояние</label>
+            <input id="Manhattan" type="radio" name="heuristics" value="0" checked>
+            <label for="Chebyshev">Расстояние Чебышева</label>
+            <input id="Chebyshev" type="radio" name="heuristics" value="1">
+        </form>
     </div>
     <div id = "table">
         <canvas class = "canvas" width = "800" height = "800" >Извините, ваш браузер нет поддерживает&lt;canvas&gt; элемент.</canvas>

@@ -12,11 +12,9 @@ body{
 	width: 100%;
 }
 
-
 #table{
-	display: grid;
-	grid-template-columns: 350px 1fr;
-	grid-template-rows: 450px 1fr;
+	margin-left: 200px;
+	margin-top: 50px;
 }
 
 #inputs_data{

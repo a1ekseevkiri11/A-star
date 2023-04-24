@@ -17,7 +17,27 @@ let matrix;
 let start = [-1, -1];
 let finish = [-1, -1];
 
+function drawACircle(x, y, color_flag){
+    x *= cell_size;
+    y *= cell_size;
+    plane.beginPath();
+    plane.arc(x + cell_size / 2, y + cell_size / 2, cell_size / 3 , 0, 2 * Math.PI);
+    plane.fillStyle = color_flag;
+    plane.fill();
+    plane.stroke();
+}
+
+function fillInTheCell(x, y, color_flag){
+    x *= cell_size;
+    y *= cell_size;
+    plane.fillStyle = color_flag;
+    plane.fillRect(x + 1, y + 1, cell_size - 2, cell_size - 2);
+}
+
 function createTableMarkup() {
+    start = [-1, -1];
+    finish = [-1, -1];
+    matrix = getMatrix(0);
     plane.clearRect(0, 0, size_matrix, size_matrix);
     plane.beginPath();
     cell_size = size_matrix / n;
@@ -36,6 +56,22 @@ function createTableMarkup() {
     plane.stroke();
 }
 
+function clearMapOfPath(){
+    if (!matrix){
+        return;
+    }
+    for (let i = 0; i < n; i++){
+        for (let j = 0; j < n; j++){
+            if (!matrix[i][j]){
+                fillInTheCell(j, i, matrix_color);
+            }
+        }
+    }
+    drawACircle(start[1], start[0], starting_flag_color);
+    drawACircle(finish[1], finish[0], finish_flag_color);
+}
+
+
 function createMap() {
     n = document.getElementById("input").value;
     if (n < 2 | n > 30 | !n) {
@@ -43,7 +79,6 @@ function createMap() {
         return;
     }
     createTableMarkup();
-    matrix = getMatrix(0);
     canvas.addEventListener("click", Click);
     document.getElementById("walls").onclick = function () {
         oper = 0; 
@@ -73,8 +108,6 @@ function Click(event) {
     //j - это x ,а i - y, потому что в канвас координаты такие:https://msiter.ru/tutorials/html5-canvas/coordinates
     let j = Math.floor(RightX / cell_size);
     let i = Math.floor(RightY / cell_size);
-    let cellX = j * cell_size;
-    let cellY = i * cell_size;
     switch (oper) {
         case 0:
             if (start[0] === i && start[1] === j) {
@@ -85,33 +118,27 @@ function Click(event) {
             }
             if (matrix[i][j]) {
                 matrix[i][j] = 0;
-                plane.fillStyle = matrix_color;
-                plane.fillRect(cellX, cellY, cell_size, cell_size);
+                fillInTheCell(j, i, matrix_color);
             }
             else {
                 matrix[i][j] = 1;
-                plane.fillStyle = obstacle_color;
-                plane.fillRect(cellX, cellY, cell_size, cell_size);
+                fillInTheCell(j, i, obstacle_color);
             }
             break;
 
         case 1:
             if (matrix[i][j]) {
                 matrix[i][j] = 0;
-                plane.fillStyle = matrix_color;
-                plane.fillRect(CellX * cell_size, CellY * cell_size, cell_size, cell_size);
+                fillInTheCell(j, i, matrix_color);
             }
             if (JSON.stringify(start) !== JSON.stringify([-1, -1])) {
-                plane.fillStyle = matrix_color;
-                plane.fillRect(start[1] * cell_size, start[0] * cell_size, cell_size, cell_size);
+                fillInTheCell(start[1], start[0], matrix_color);
             }
             if (JSON.stringify([i, j]) === JSON.stringify(finish)) {
-                plane.fillStyle = matrix_color;
-                plane.fillRect(finish[1] * cell_size, finish[0] * cell_size, cell_size, cell_size);
+                fillInTheCell(finish[1], finish[0], matrix_color);
                 finish = [-1, -1];
             }
-            plane.fillStyle = starting_flag_color;
-            plane.fillRect(cellX, cellY, cell_size, cell_size);
+            drawACircle(j, i, starting_flag_color);
             start[0] = i;
             start[1] = j;
             break;
@@ -119,26 +146,22 @@ function Click(event) {
         case 2:
             if (matrix[i][j]) {
                 matrix[i][j] = 0;
-                plane.fillStyle = matrix_color;
-                plane.fillRect(cellX, cellY, cell_size, cell_size);
+                fillInTheCell(j, i, matrix_color);
             }
             if (JSON.stringify(start) === JSON.stringify([i, j])) {
-                plane.fillStyle = matrix_color;
-                plane.fillRect(start[1] * cell_size, start[0] * cell_size * cell_size, cell_size, cell_size);
+                fillInTheCell(start[1], start[0], matrix_color);
                 start = [-1, -1];
             }
             if (JSON.stringify(finish) !== JSON.stringify([-1, -1])) {
-                plane.fillStyle = matrix_color;
-                plane.fillRect(finish[1] * cell_size, finish[0] * cell_size, cell_size, cell_size);
+                fillInTheCell(finish[1], finish[0], matrix_color);
             }
-
-            plane.fillStyle = finish_flag_color;
-            plane.fillRect(cellX, cellY, cell_size, cell_size);
+            drawACircle(j, i, finish_flag_color);
             finish[0] = i;
             finish[1] = j;
             break;
     }
 }
+
 
 
 function Queue() {
@@ -172,8 +195,11 @@ function Queue() {
     }
 }
 
-function heuristic(cur, finish) {
-    return Math.max(Math.abs(finish[0] - cur[0]), Math.abs(finish[1] - cur[1]));
+function heuristic(cur, finish, choice_of_heuristics) {
+    if(choice_of_heuristics === 0){
+        return Math.max(Math.abs(finish[0] - cur[0]), Math.abs(finish[1] - cur[1]));//Расстояние Чебышева
+    }
+    return Math.abs(finish[0] - cur[0]) + Math.abs(finish[1] - cur[1]);//манхэттенское расстояние
 }
 
 function getNeigbors(cur, matrix, G) {
@@ -208,6 +234,13 @@ function getNeigbors(cur, matrix, G) {
 }
 
 async function aStar(start, finish) {
+    
+    if ((JSON.stringify(start) === JSON.stringify([-1, -1])) || (JSON.stringify(finish) === JSON.stringify([-1, -1]))){
+        alert("Введите все данные!");
+        return;
+    }
+    const choice_of_heuristics = document.querySelector('input[name="heuristics"]:checked').value;
+    clearMapOfPath();
     let queue = new Queue();
     let GScores = getMatrix(-1);
     GScores[start[0]][start[1]] = 0;
@@ -220,7 +253,7 @@ async function aStar(start, finish) {
             parents[i][j][1] = -1;
         }
     }
-    queue.add([start, heuristic(start, finish)]);
+    queue.add([start, heuristic(start, finish, choice_of_heuristics)]);
     while (!queue.isEmpty()) {
         let current = queue.takeFirst();
         if (current[0][0] === finish[0] && current[0][1] === finish[1]) {
@@ -229,11 +262,9 @@ async function aStar(start, finish) {
         let neighbours = getNeigbors(current, matrix, GScores);
         for (let i = 0; i < neighbours.length; i++) {
             let neigbor = neighbours[i];
-            plane.fillStyle = motion_animation_color;
-            plane.fillRect(neigbor[1] * cell_size, neigbor[0] * cell_size, cell_size, cell_size);
+            drawACircle(neigbor[1], neigbor[0], motion_animation_color);
             await wait();
-            plane.fillStyle = passed_cells_color;
-            plane.fillRect(neigbor[1] * cell_size, neigbor[0] * cell_size, cell_size, cell_size);
+            drawACircle(neigbor[1], neigbor[0], passed_cells_color);
             let nX = neigbor[0];
             let nY = neigbor[1];
             let cX = current[0][0];
@@ -242,24 +273,19 @@ async function aStar(start, finish) {
                 parents[nX][nY][0] = cX;
                 parents[nX][nY][1] = cY;
                 GScores[nX][nY] = GScores[cX][cY] + 1;
-                queue.add([neigbor, GScores[nX][nY] + heuristic(neigbor, finish)]);
+                queue.add([neigbor, GScores[nX][nY] + heuristic(neigbor, finish, choice_of_heuristics)]);
             }
         }
     }
-    plane.fillStyle = finish_flag_color;
-    plane.fillRect(finish[1] * cell_size, finish[0] * cell_size, cell_size, cell_size);
-
+    drawACircle(finish[1], finish[0], finish_flag_color);
     if (JSON.stringify(parents[finish[0]][finish[1]]) !== JSON.stringify([-1, -1])) {
         let cell = parents[finish[0]][finish[1]];
         while (cell[0] !== -1 && cell[1] !== -1) {
-            plane.fillStyle = path_color;
-            plane.fillRect(cell[1] * cell_size, cell[0] * cell_size, cell_size, cell_size);
+            drawACircle(cell[1], cell[0], path_color);
             cell = parents[cell[0]][cell[1]];
         }
-        plane.fillStyle = starting_flag_color;
-        plane.fillRect(start[1] * cell_size, start[0] * cell_size, cell_size, cell_size);
+        drawACircle(start[1], start[0], starting_flag_color);
     }
-
     else {
         alert("Пути нет!");
     }
