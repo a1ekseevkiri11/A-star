@@ -85,20 +85,20 @@ function clearMapOfPath(){
 
 function createMap() {
     n = document.getElementById("input").value;
-    if (n < 2 | n > 30 | !n) {
-        alert("Введите число от 2 до 30")
+    if (n < 2 | n > 51 | !n) {
+        alert("Введите число от 2 до 51")
         return;
     }
     createTableMarkup();
     canvas.addEventListener("click", Click);
-    document.getElementById("walls").onclick = function () {
-        oper = 0; 
+    document.getElementById("obstacle").onclick = function () {
+        oper = 'obstacle'; 
     };
     document.getElementById("start").onclick = function () {
-        oper = 1; 
+        oper = 'start'; 
     };
     document.getElementById("finish").onclick = function () { 
-        oper = 2; 
+        oper = 'finish'; 
     };
 }
 
@@ -120,7 +120,7 @@ function Click(event) {
     let j = Math.floor(RightX / cell_size);
     let i = Math.floor(RightY / cell_size);
     switch (oper) {
-        case 0:
+        case 'obstacle':
             if (start[0] === i && start[1] === j) {
                 start = [-1, -1];
             }
@@ -137,7 +137,7 @@ function Click(event) {
             }
             break;
 
-        case 1:
+        case 'start':
             if (matrix[i][j]) {
                 matrix[i][j] = 0;
                 fillInTheCell(j, i, matrix_color);
@@ -154,7 +154,7 @@ function Click(event) {
             start[1] = j;
             break;
 
-        case 2:
+        case 'finish':
             if (matrix[i][j]) {
                 matrix[i][j] = 0;
                 fillInTheCell(j, i, matrix_color);
