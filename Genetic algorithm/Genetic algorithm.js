@@ -11,7 +11,7 @@ const height_plane = canvas.height;
 
 const population_size = 500;
 const mutation_rate = 0.01;
-const number_iterations = 50;
+const number_iterations = 10;
 
 let cities = [];
 let number_of_cities;
@@ -85,9 +85,7 @@ function shuffle(arr) {
         arr[i] = arr[j];
         arr[j] = tmp;
     }
-    return arr.map(function (item) { 
-        return item;   
-    });
+    return arr.slice();
 }
 
 async function geneticAlgorithm(){
@@ -194,9 +192,7 @@ function mutate(order) {
             [order[indexA], order[indexB]] = [order[indexB], order[indexA]];
         }
     }
-    return order.map(function (item) { 
-        return item;   
-    });
+    return order.slice();
 }
 
 function getDistancePath(array){
