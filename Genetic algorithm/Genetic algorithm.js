@@ -9,17 +9,13 @@ const width_plane = canvas.width;
 const height_plane = canvas.height;
 
 
-const population_size = 500;
-const mutation_rate = 0.01;
-const number_iterations = 10;
+const population_size = 1000;
+const mutation_rate = 0.05;
+const number_iterations = 10000;
 
 let cities = [];
 let number_of_cities;
-let fitness = [];
 let population = [];
-let record_distance = Infinity;
-let best_ever;
-let current_best;
 
 
 //работа с canvas
@@ -44,11 +40,7 @@ function clearMap() {
     plane.clearRect(0, 0, width_plane, height_plane);
     cities = [];
     number_of_cities = 0;
-    fitness = [];
     population = [];
-    record_distance = Infinity;
-    best_ever = [];
-    current_best = [];
 }
 
 function mapUpdate(){
@@ -81,9 +73,7 @@ function shuffle(arr) {
     for(let i = 0; i < arr.length; i++) 
     { 
         let j = Math.floor(Math.random() * (i + 1));
-        let tmp =  arr[i];
-        arr[i] = arr[j];
-        arr[j] = tmp;
+        [arr[i], arr[j]] = [arr[j], arr[i]];
     }
     return arr.slice();
 }
@@ -101,82 +91,47 @@ async function geneticAlgorithm(){
     for (let i = 0; i < population_size; i++){
         population[i] = shuffle(order);
     }
-    let previous_best_ever = 0;
+    let previous_best = [];
     let counter = 0;
-    while(true){
-        if(previous_best_ever === best_ever && counter > number_iterations){
-            break;
-        }
-        if(previous_best_ever === best_ever){
+    for(let i = 0; i < number_iterations; i++){
+        nextGeneration();
+        connectLinesPath(population[0]);
+        await wait();
+        if (previous_best === population[0]){
             counter++;
         }
-        previous_best_ever = best_ever;
-        calculateFitness();
-        normalizeFitness();
-        nextGeneration();
-        connectLinesPath(current_best);
-        await wait();
+        if (counter > 50){
+            break;
+        }
+        previous_best = population[0];
         mapUpdate();
     }
-    connectLinesPath(best_ever);
+    connectLinesPath(population[0]);
     alert("Путь найден!");
 }
 
-function calculateFitness(){
-    let current_record = Infinity;
-    for (let i = 0; i < population.length; i++) {
-        const d = getDistancePath(population[i]);
-        if (d < record_distance) {
-            record_distance = d;
-            best_ever = population[i];
-        }
-        if (d < current_record) {
-            current_record = d;
-            current_best = population[i];
-        }
-        fitness[i] = 1 / (Math.pow(d, 8) + 1);
-    }
-}
-
-function normalizeFitness() {
-    let sum = 0;
-    for (let i = 0; i < fitness.length; i++) {
-        sum += fitness[i];
-    }
-    for (let i = 0; i < fitness.length; i++) {
-        fitness[i] = fitness[i] / sum;
-    }
-}
-
 function nextGeneration() {
-    const newPopulation = [];
-    for (var i = 0; i < population.length; i++) {
-        const orderA = getOne(population, fitness);
-        const orderB = getOne(population, fitness);
-        const order = crossOver(orderA, orderB);
+    let newPopulation = population;
+    for (let i = 0; i < population_size; i++) {
+        let orderA = population[Math.floor(Math.random() * population_size)];
+        let orderB = population[Math.floor(Math.random() * population_size)];
+        while (orderA === orderB){
+            orderB = population[Math.floor(Math.random() * population_size)];
+        }
+        let order = crossOver(orderA, orderB);
         mutate(order);
-        newPopulation[i] = order;
+        newPopulation.push(order);
     }
-    population = newPopulation;
-}
-
-function getOne(list, prob) {
-    let index = 0;
-    let r = Math.random(1);
-    while (r > 0) {
-        r = r - prob[index];
-        index++;
-    }
-    index--;
-    return list[index].slice();
+    newPopulation.sort((a, b) => getDistancePath(a) - getDistancePath(b));
+    population = newPopulation.slice(0, population_size);
 }
 
 function crossOver(orderA, orderB) {
-    const start = Math.floor(Math.random(orderA.length));
-    const finish = Math.floor(Math.random(start + 1, orderA.length));
-    const neworder = orderA.slice(start, finish);
+    let start = Math.floor(Math.random(orderA.length));
+    let finish = Math.floor(Math.random(start + 1, orderA.length));
+    let neworder = orderA.slice(start, finish);
     for (let i = 0; i < orderB.length; i++) {
-        const city = orderB[i];
+        let city = orderB[i];
         if (!neworder.includes(city)) {
             neworder.push(city);
         }
@@ -187,8 +142,8 @@ function crossOver(orderA, orderB) {
 function mutate(order) {
     for (let i = 0; i < number_of_cities; i++) {
         if (Math.random(1) < mutation_rate) {
-            const indexA = Math.floor(Math.random(order.length));
-            const indexB = (indexA + 1) % number_of_cities;
+            let indexA = Math.floor(Math.random(order.length));
+            let indexB = (indexA + 1) % number_of_cities;
             [order[indexA], order[indexB]] = [order[indexB], order[indexA]];
         }
     }
@@ -209,5 +164,5 @@ function distance(point1, point2){
 }
 
 async function wait() {
-    return new Promise(resolve => setTimeout(resolve, 100));
+    return new Promise(resolve => setTimeout(resolve, 20));
 }
