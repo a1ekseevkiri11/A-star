@@ -2,6 +2,7 @@ const canvas = document.querySelector('canvas');
 const plane_width = canvas.width;
 const plane_height = canvas.height;
 const ctx = canvas.getContext('2d');
+
 let points = [];
 let centroids = [];
 let colors = [];
@@ -59,6 +60,7 @@ function delitMap() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     points = [];
     centroids = [];
+    colors = [];
 }
 
 function KMeans() {
