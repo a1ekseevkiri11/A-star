@@ -91,6 +91,7 @@ async function geneticAlgorithm(){
     for (let i = 0; i < population_size; i++){
         population[i] = shuffle(order);
     }
+    console.log(population);
     let previous_best = [];
     let counter = 0;
     for(let i = 0; i < number_iterations; i++){
@@ -136,7 +137,7 @@ function crossOver(orderA, orderB) {
             neworder.push(city);
         }
     }
-    return neworder;
+    return neworder.slice();
 }
 
 function mutate(order) {
