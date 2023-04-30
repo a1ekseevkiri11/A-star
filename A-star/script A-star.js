@@ -325,7 +325,7 @@ function generateLabyrinth(){
 	}
 	const startX = getRandomFrom(Array(n).fill(0).map((item, index) => index).filter(x => isEven(x)));
 	const startY = getRandomFrom(Array(n).fill(0).map((item, index) => index).filter(x => isEven(x)));
-	var tractor = {};
+	let tractor = {};
 	tractor.x = startX;
 	tractor.y = startY;
 	function setField (x, y, value) {
@@ -410,5 +410,4 @@ function generateLabyrinth(){
 				break;
 		}
 	}
-
 }
