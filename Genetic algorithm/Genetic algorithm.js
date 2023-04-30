@@ -1,6 +1,8 @@
 const point_color = "black";
 const point_radius = 10;
 const connecting_line_thickness = 3;
+const connecting_line_color = "blue";
+const update_time = 20;
 
 
 const canvas = document.getElementById("canvas");
@@ -10,16 +12,11 @@ const height_plane = canvas.height;
 
 
 const population_size = 1000;
-const mutation_rate = 0.01;
-const number_iterations = 1000;
-
-
+const mutation_rate = 0.05;
+const number_iterations = 10000;
 
 let cities = [];
-let number_of_cities;
-let population = [];
 
-//работа с canvas
 canvas.addEventListener("click", function(e){
     let point_coordinate = {
         x:e.pageX - this.offsetLeft,
@@ -33,33 +30,35 @@ function drawAPoint(point){
     plane.beginPath();
     plane.arc(point.x, point.y, point_radius, 0, 2 * Math.PI);
     plane.fillStyle = point_color;
+    plane.strokeStyle = point_color;
     plane.fill();
     plane.stroke();
-    return;
 }
 
 function clearMap() {
     plane.clearRect(0, 0, width_plane, height_plane);
     cities = [];
     number_of_cities = 0;
-    return;
 }
 
 function mapUpdate(){
     plane.clearRect(0, 0, width_plane, height_plane);
+    updatePoint();
+}
+
+function updatePoint(){
     for (let i = 0; i < cities.length; i++){
         drawAPoint(cities[i]);
     }
-    return;
 }
 
 function connectLines(point1, point2){
     plane.beginPath();
     plane.lineWidth = connecting_line_thickness;
+    plane.strokeStyle = connecting_line_color;
     plane.moveTo(point1.x, point1.y);
     plane.lineTo(point2.x, point2.y);
     plane.stroke();
-    return;
 }
 
 function connectLinesPath(array){
@@ -67,12 +66,10 @@ function connectLinesPath(array){
         connectLines(cities[array[i]], cities[array[i + 1]]);
     }
     connectLines(cities[array[0]], cities[array[array.length - 1]]);
-    return;
 }
-///////////////////////////////////////////
 
-//генетический алгоритм...
-function getFirstPopulation(){
+function getFirstPopulation(number_of_cities){
+    let population = [];
     for (let i = 0; i < population_size; i++){
         let order = [];
         for (let j = 0; j < number_of_cities; j++){
@@ -88,21 +85,23 @@ function getFirstPopulation(){
         }
         population[i] = order;
     }
+    return population;
 }
 
 async function geneticAlgorithm(){
-    number_of_cities = cities.length;
+    let population = [];
+    let number_of_cities = cities.length;
     if (number_of_cities === 0){
         alert("Расставьте точки!");
         return;
     }
-    getFirstPopulation();
+    population = getFirstPopulation(number_of_cities);
     let previous_best = [];
     let counter = 0;
     for(let i = 0; i < number_iterations; i++){
-        population = nextGeneration();
+        population = nextGeneration(population);
         connectLinesPath(population[0]);
-        await wait();
+        updatePoint();
         if (previous_best === population[0]){
             counter++;
         }
@@ -113,14 +112,15 @@ async function geneticAlgorithm(){
             break;
         }
         previous_best = population[0];
+        await wait();
         mapUpdate();
     }
     connectLinesPath(population[0]);
+    updatePoint();
     alert("Путь найден!");
 }
 
-function nextGeneration() {
-    let newPopulation = population;
+function nextGeneration(population) {
     for (let i = 0; i < population_size; i++) {
         let orderA = population[Math.floor(Math.random() * population_size)];
         let orderB = population[Math.floor(Math.random() * population_size)];
@@ -128,11 +128,11 @@ function nextGeneration() {
             orderB = population[Math.floor(Math.random() * population_size)];
         }
         let order = crossOver(orderA, orderB);
-        newPopulation.push(order);
+        population.push(order);
     }
-    newPopulation.sort((a, b) => getDistancePath(a) - getDistancePath(b));
-    population = newPopulation.slice(0, population_size);
-    return population;
+    population.sort((a, b) => getDistancePath(a) - getDistancePath(b));
+    return population.slice(0, population_size);
+    
 }
 
 function crossOver(orderA, orderB) {
@@ -151,10 +151,10 @@ function crossOver(orderA, orderB) {
 }
 
 function mutate(order) {
-    for (let i = 0; i < number_of_cities; i++) {
+    for (let i = 0; i < order.length; i++) {
         if (Math.random(1) < mutation_rate) {
             let indexA = Math.floor(Math.random(order.length));
-            let indexB = (indexA + 1) % number_of_cities;
+            let indexB = (indexA + 1) % order.length;
             [order[indexA], order[indexB]] = [order[indexB], order[indexA]];
         }
     }
@@ -163,10 +163,10 @@ function mutate(order) {
 
 function getDistancePath(array){
     let sum = 0;
-    for (let i = 0; i < number_of_cities - 1; i++){
+    for (let i = 0; i < array.length - 1; i++){
         sum += distance(cities[array[i]], cities[array[i + 1]]);
     }
-    sum += distance(cities[array[0]], cities[array[number_of_cities - 1]]);
+    sum += distance(cities[array[0]], cities[array[array.length - 1]]);
     return sum;
 }
 
@@ -175,5 +175,5 @@ function distance(point1, point2){
 }
 
 async function wait() {
-    return new Promise(resolve => setTimeout(resolve, 50));
+    return new Promise(resolve => setTimeout(resolve, update_time));
 }
