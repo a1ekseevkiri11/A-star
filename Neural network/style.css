@@ -1,0 +1,24 @@
+html{
+	margin:0 auto;
+	padding: 0;
+	height: 100%;
+	width: 100%;
+}
+
+body{
+	margin:0 auto;
+	padding: 0;
+	height: 100%;
+	width: 100%;
+}
+
+td{
+	margin:0px;
+	border: 2px solid #000000;
+	padding: 50px;
+}
+
+#table-container{
+	margin: 50px auto;
+	width: 400px;
+}
