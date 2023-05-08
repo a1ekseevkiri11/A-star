@@ -1,0 +1,38 @@
+html{
+	margin:0;
+	padding: 0;
+	height: 100%;
+	width: 100%;
+}
+
+body{
+	margin: 0;
+	display: flex;
+    overflow: hidden;
+}
+
+#header{
+    margin: 40px auto;
+}
+
+.container{
+	display: block;
+    margin: 0px auto;
+    padding-top: 100px;
+    justify-content: center;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+}
+
+#linksToAlgorithms{
+    justify-content: space-between;
+    text-align: center;
+    margin: 40px auto;
+}
+
+#linkToCreators{
+    justify-content: space-between;
+    text-align: center;
+    margin: 40px auto;
+}

@@ -98,7 +98,7 @@ class Neuron {
       : [0];
   }
  
-  get $isFirstLayerNeuron() {
+  get isFirstLayerNeuron() {
     return !(this.inputs[0] instanceof Input)
   }
  
@@ -109,13 +109,13 @@ class Neuron {
   }
  
   get value() {
-    return this.$isFirstLayerNeuron
+    return this.isFirstLayerNeuron
       ? this.inputs[0]
       : this._layer._network.activationFunction(this.inputSum);
   }
  
   set input(val) {
-    if (!this.$isFirstLayerNeuron) {
+    if (!this.isFirstLayerNeuron) {
       return;
     }
  
@@ -123,7 +123,7 @@ class Neuron {
   }
  
   set error(error) {
-    if (this.$isFirstLayerNeuron) {
+    if (this.isFirstLayerNeuron) {
       return;
     }
  
@@ -148,7 +148,7 @@ class Layer {
   }
  
   get $isFirstLayer() {
-    return this.neurons[0].$isFirstLayerNeuron;
+    return this.neurons[0].isFirstLayerNeuron;
   }
  
   set input(val) {
@@ -225,9 +225,3 @@ class Network {
     });
   }
 }
-
-
-
-
-
- 

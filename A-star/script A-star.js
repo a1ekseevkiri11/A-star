@@ -173,9 +173,6 @@ function Click(event) {
     }
 }
 
-
-
-
 function Queue() {
     let Array = [];
     //Добавляем ячейку и расстояние
@@ -208,7 +205,7 @@ function Queue() {
 }
 
 function heuristic(cur, finish, choice_of_heuristics) {
-    if(choice_of_heuristics === 0){
+    if(choice_of_heuristics == 0){
         return Math.max(Math.abs(finish[0] - cur[0]), Math.abs(finish[1] - cur[1]));//Расстояние Чебышева
     }
     return Math.abs(finish[0] - cur[0]) + Math.abs(finish[1] - cur[1]);//манхэттенское расстояние
@@ -246,7 +243,6 @@ function getNeigbors(cur, matrix, G) {
 }
 
 async function aStar(start, finish) {
-    
     if ((JSON.stringify(start) === JSON.stringify([-1, -1])) || (JSON.stringify(finish) === JSON.stringify([-1, -1])) || !matrix){
         alert("Введите все данные!");
         return;
@@ -307,7 +303,6 @@ async function aStar(start, finish) {
 async function wait() {
     return new Promise(resolve => setTimeout(resolve, 1000 / n));
 }
-
 
 function generateLabyrinth(){
     if(!n){

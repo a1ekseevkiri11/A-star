@@ -2,7 +2,7 @@ const point_color = "black";
 const point_radius = 10;
 const connecting_line_thickness = 3;
 const connecting_line_color = "blue";
-const update_time = 20;
+const update_time = 5;
 
 
 const canvas = document.getElementById("canvas");
@@ -11,9 +11,9 @@ const width_plane = canvas.width;
 const height_plane = canvas.height;
 
 
-const population_size = 1000;
+let population_size;
 const mutation_rate = 0.05;
-const number_iterations = 10000;
+const number_iterations = 100000;
 
 let cities = [];
 
@@ -69,6 +69,7 @@ function connectLinesPath(array){
 }
 
 function getFirstPopulation(number_of_cities){
+    population_size = cities.length * 250;
     let population = [];
     for (let i = 0; i < population_size; i++){
         let order = [];
@@ -108,7 +109,7 @@ async function geneticAlgorithm(){
         if(previous_best !== population[0]){
             counter = 0;
         }
-        if (counter > 20){
+        if (counter > cities.length * 2){
             break;
         }
         previous_best = population[0];
