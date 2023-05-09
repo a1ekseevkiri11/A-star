@@ -64,6 +64,10 @@ function delitMap() {
 }
 
 function KMeans() {
+    if(points.length == 0| centroids.length == 0){
+        alert("Расставьте точки и центры кластера!");
+        return;
+    }
     let clasters = new Array(centroids.length);
     for(let i = 0; i<points.length * 100; i++) {
         for(let i in centroids) {
