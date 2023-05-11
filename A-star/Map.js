@@ -1,3 +1,10 @@
+document.getElementById("generateLabyrinth").addEventListener("click", generateLabyrinth);
+document.getElementById("aStar").addEventListener("click", aStar);
+document.getElementById("createTableMarkup").addEventListener("click", createTableMarkup);
+document.getElementById("clearMapOfPath").addEventListener("click", clearMapOfPath);
+document.getElementById("createMap").addEventListener("click", createMap);
+
+
 const starting_flag_color = "green";
 const finish_flag_color = "red";
 const path_color = "blue";

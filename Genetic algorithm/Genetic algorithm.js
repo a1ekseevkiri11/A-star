@@ -1,3 +1,6 @@
+document.getElementById("geneticAlgorithm").addEventListener("click", geneticAlgorithm);
+document.getElementById("clearMap").addEventListener("click", clearMap); 
+
 const point_color = "black";
 const point_radius = 10;
 const connecting_line_thickness = 3;

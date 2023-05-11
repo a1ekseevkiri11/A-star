@@ -2,6 +2,8 @@ const matrix_color = "white";
 const pen_color = "black";
 
 function createTable() {
+  document.getElementById("createMatrix").addEventListener("click", createMatrix);
+  document.getElementById("clearTable").addEventListener("click", clearTable); 
   let container = document.getElementById("table-container");
   let table = document.createElement("table");
   for (let i = 0; i < 5; i++) {
@@ -24,6 +26,7 @@ function createTable() {
   }
   container.innerHTML = "";
   container.appendChild(table);
+  
 }
 
 function createMatrix(){
@@ -40,7 +43,6 @@ function createMatrix(){
       }
     }
   }
-  console.log("[" + matrix.join(", ") + "]");
   matrix = getFeedForward(matrix);
   let max_indx = 0;
   let max_number = 0;

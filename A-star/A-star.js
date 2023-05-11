@@ -67,7 +67,7 @@ function getNeigbors(cur, matrix, G) {
     return return_neighbours;
 }
 
-async function aStar(start, finish) {
+async function aStar() {
     if ((JSON.stringify(start) === JSON.stringify([-1, -1])) || (JSON.stringify(finish) === JSON.stringify([-1, -1])) || !matrix){
         alert("Введите все данные!");
         return;

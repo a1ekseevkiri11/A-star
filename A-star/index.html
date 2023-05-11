@@ -14,14 +14,14 @@
     <div id = "inputs_data">
         <label for="input">Введите значение</label>
         <input id="input" type="number" min="2" max="51">
-        <button id = "map" onclick = "createMap()">Создать карту</button>
+        <button id = "createMap">Создать карту</button>
         <button id = "obstacle">Препятствие</button>
         <button id = "start">Старт</button>
         <button id = "finish">Финиш</button>
-        <button onclick="generateLabyrinth()">Построить лабиринт</button>
-        <button onclick="aStar(start, finish)">Найти путь</button>
-        <button onclick="createTableMarkup()">Очистить карту</button>
-        <button onclick="clearMapOfPath()">Очистить карту от путей</button>
+        <button id="generateLabyrinth">Построить лабиринт</button>
+        <button id="aStar">Найти путь</button>
+        <button id="createTableMarkup">Очистить карту</button>
+        <button id="clearMapOfPath">Очистить карту от путей</button>
         <form id = "choice_of_heuristics">
             <label for="Manhattan">Манхэттенское расстояние</label>
             <input id="Manhattan" type="radio" name="heuristics" value="0" checked>
