@@ -1,3 +1,5 @@
+document.getElementById("clearMap").addEventListener("click", clearMap);
+
 canvas.addEventListener("click", function(e){
     let point_coordinate = {
         x:e.pageX - this.offsetLeft,
