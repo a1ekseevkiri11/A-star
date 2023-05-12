@@ -10,8 +10,24 @@
   <link rel="stylesheet" href="style.css" />
 </head>
 <body onload="createTable()">
-    <button id="createMatrix">Какая цифра?</button>
-    <button id="clearTable">Очистить поле</button>
-    <div id="table-container"></div>
+  <header id="header">
+    <div class="dropdown">
+      <a id="home" href="/index.html">ПК</a>
+      <div class="dropdown-content">
+        <a href="/A-star/index.html">А*</a>
+        <a href="/Clustering/index.html">Алгоритм кластеризации</a>
+        <a href="/Genetic algorithm/index.html">Генетический алгоритм</a>
+        <a href="/Ant algorithm/index.html">Муравьиный алгоритм</a>
+        <a href="/Genetic algorithm/index.html">Дерево решений</a>
+        <a href="/Neural network/index.html">Нейронная сеть</a>
+      </div>
+    </div>
+  </header>
+  <main id="main">
+    <button class="nav_link" id="createMatrix">Какая цифра?</button>
+  <button class="nav_link" id="clearTable">Очистить поле</button>
+  </main>
+  
+  <div id="table-container"></div>
 </body>
 </html>

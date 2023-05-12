@@ -1,5 +1,5 @@
 const matrix_color = "white";
-const pen_color = "black";
+const pen_color = "darkorange";
 
 function createTable() {
   document.getElementById("createMatrix").addEventListener("click", createMatrix);

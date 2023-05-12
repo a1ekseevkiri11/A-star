@@ -16,7 +16,7 @@ body{
 }
 
 :root{
-    --header-text-color: #d1d1d1;
+    --header-text-color: #ffffff;
     --button-text-color: #ffffff;
     --background-button-color: #c4b3ffe7;
     --background-color: #000000;
@@ -35,10 +35,10 @@ body{
     color: var(--header-text-color);
 }
 
-.nav_link{
+.nav_link {
     display: inline-block;
     width: 300px;
-    padding: 12px 24px;
+    padding: 24px 24px;
     font-size: 16px;
     text-align: center;
     text-decoration: none;
@@ -47,9 +47,10 @@ body{
     font-weight:400;
     font-size: 20px;
     color: var(--button-text-color);
-    border-radius: 15px;
+    border-radius: 20px;
 }
 
+.nav_link:hover {background-color: #ac83ec;}
 
 #links_to_algorithms{
     display: flex;
