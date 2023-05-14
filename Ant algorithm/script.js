@@ -4,17 +4,17 @@ const bodySize = document.body.getBoundingClientRect();
 const update_time = 5;
 
 if(bodySize.width <= 450){
-    var size_matrix = Math.min(bodySize.width, bodySize.height) * 0.7;
+    var size_matrix = Math.min(bodySize.width, bodySize.height) * 0.9;
     var point_radius = 4;
     var connecting_line_thickness = 2;
 }
 else if(bodySize.width <= 900){
-    var size_matrix = Math.min(bodySize.width, bodySize.height) * 0.8;
+    var size_matrix = Math.min(bodySize.width, bodySize.height) * 0.85;
     var point_radius = 6;
     var connecting_line_thickness = 2;
 }
 else{
-    var size_matrix = Math.min(bodySize.width, bodySize.height) * 0.9;
+    var size_matrix = Math.min(bodySize.width, bodySize.height) * 0.8;
     var point_radius = 10;
     var connecting_line_thickness = 3;
 }

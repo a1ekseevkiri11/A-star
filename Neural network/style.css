@@ -11,7 +11,7 @@ html{
 body{
 	margin: 0;
     padding: 0;
-    overflow: hidden;
+    /* overflow: hidden; */
     background-color: var(--background-color);
 }
 
@@ -112,7 +112,7 @@ body{
 } 
 
 td{
-	padding: 6vmin;
+	padding: 7vmin;
 	border-radius: 1vmin;
 }
 
