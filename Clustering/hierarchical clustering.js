@@ -6,7 +6,7 @@ function elements() {
 
 elements();
 
-document.querySelector("button.иерархия").addEventListener("click", () => {
+document.querySelector("button.hierarchy").addEventListener("click", () => {
   elements();
   document.querySelector(".hierarchicInputs").style.display = "block";
 })

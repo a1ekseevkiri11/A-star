@@ -52,6 +52,13 @@ body{
 
 .nav_link:hover {background-color: #ac83ec;}
 
+@media (min-width: 900px) {
+    .nav_link {
+        font-size: 25px;
+        border-radius: 25px;
+    }
+}
+
 #links_to_algorithms{
     display: flex;
     justify-content: space-evenly;
