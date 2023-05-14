@@ -16,10 +16,10 @@ const passed_cells_color = "DarkGray";
 const canvas = document.querySelectorAll("canvas")[0];
 const plane = canvas.getContext("2d");
 const bodySize = document.body.getBoundingClientRect();
-if(bodySize.width <=450){
+if(bodySize.width <= 450){
     var size_matrix = Math.min(bodySize.width, bodySize.height) * 0.7;
 }
-else if(bodySize.width <=900){
+else if(bodySize.width <= 900){
     var size_matrix = Math.min(bodySize.width, bodySize.height) * 0.8;
 }
 else{
@@ -64,9 +64,9 @@ function getMatrix(count) {
     return matrix;
 }
 
-function Click(event) {
-    let RightX = event.pageX - event.target.offsetLeft;//относительные координаты
-    let RightY = event.pageY - event.target.offsetTop;
+function Click(e) {
+    let RightX = e.pageX - e.target.offsetLeft;//относительные координаты
+    let RightY = e.pageY - e.target.offsetTop;
     //j - это x ,а i - y, потому что в канвас координаты такие:https://msiter.ru/tutorials/html5-canvas/coordinates
     let j = Math.floor(RightX / cell_size);
     let i = Math.floor(RightY / cell_size);

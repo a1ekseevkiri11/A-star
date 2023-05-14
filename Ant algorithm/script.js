@@ -1,14 +1,22 @@
 const canvas = document.querySelector('canvas');
 const ctx = canvas.getContext("2d");
 const bodySize = document.body.getBoundingClientRect();
-if(bodySize.width <=450){
+const update_time = 5;
+
+if(bodySize.width <= 450){
     var size_matrix = Math.min(bodySize.width, bodySize.height) * 0.7;
+    var point_radius = 4;
+    var connecting_line_thickness = 2;
 }
-else if(bodySize.width <=900){
+else if(bodySize.width <= 900){
     var size_matrix = Math.min(bodySize.width, bodySize.height) * 0.8;
+    var point_radius = 6;
+    var connecting_line_thickness = 2;
 }
 else{
     var size_matrix = Math.min(bodySize.width, bodySize.height) * 0.9;
+    var point_radius = 10;
+    var connecting_line_thickness = 3;
 }
 canvas.setAttribute('width',size_matrix);
 canvas.setAttribute('height', size_matrix);
@@ -32,7 +40,7 @@ canvas.addEventListener('click', (event) => {
 
   function createPoint(x, y) {
     ctx.beginPath();
-    ctx.arc(x, y, 10, 0, 2 * Math.PI);
+    ctx.arc(x, y, point_radius, 0, 2 * Math.PI);
     ctx.fillStyle = "black";
     ctx.fill();
  }
@@ -45,12 +53,13 @@ canvas.addEventListener('click', (event) => {
         ctx.lineTo(cities[best_way[i]][0], cities[best_way[i]][1]);
     }
     ctx.lineTo(cities[best_way[0]][0], cities[best_way[0]][1]);
+    ctx.lineWidth = connecting_line_thickness;
     ctx.strokeStyle = color;
     ctx.lineWidth = 2;
     ctx.stroke();
     for(let i = 0; i < cities.length; i++) {
         ctx.beginPath();
-        ctx.arc(cities[i][0], cities[i][1], 10, 0, 2 * Math.PI);
+        ctx.arc(cities[i][0], cities[i][1], point_radius, 0, 2 * Math.PI);
         ctx.fillStyle = "black";
         ctx.fill();
     }
