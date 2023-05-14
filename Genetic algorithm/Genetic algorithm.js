@@ -34,26 +34,6 @@ const number_iterations = 100000;
 let population_size;
 let cities = [];
 
-function getFirstPopulation(number_of_cities){
-    population_size = cities.length * 250;
-    let population = [];
-    for (let i = 0; i < population_size; i++){
-        let order = [];
-        for (let j = 0; j < number_of_cities; j++){
-            order[j] = j;
-        }
-        for (let j = 0; j < number_of_cities; j++){
-            let x = Math.floor(Math.random() * number_of_cities);
-            let y = Math.floor(Math.random() * number_of_cities);
-            while(x === y){
-                y = Math.floor(Math.random() * number_of_cities);
-            }
-            [order[x], order[y]] = [order[y], order[x]];
-        }
-        population[i] = order;
-    }
-    return population;
-}
 
 async function geneticAlgorithm(){
     let population = [];
@@ -87,6 +67,28 @@ async function geneticAlgorithm(){
     alert("Путь найден!");
 }
 
+function getFirstPopulation(number_of_cities){
+    population_size = cities.length * 250;
+    let population = [];
+    for (let i = 0; i < population_size; i++){
+        let order = [];
+        for (let j = 0; j < number_of_cities; j++){
+            order[j] = j;
+        }
+        for (let j = 0; j < number_of_cities; j++){
+            let x = Math.floor(Math.random() * number_of_cities);
+            let y = Math.floor(Math.random() * number_of_cities);
+            while(x === y){
+                y = Math.floor(Math.random() * number_of_cities);
+            }
+            [order[x], order[y]] = [order[y], order[x]];
+        }
+        population[i] = order;
+    }
+    return population;
+}
+
+
 function nextGeneration(population) {
     for (let i = 0; i < population_size; i++) {
         let orderA = population[Math.floor(Math.random() * population_size)];
@@ -99,7 +101,6 @@ function nextGeneration(population) {
     }
     population.sort((a, b) => getDistancePath(a) - getDistancePath(b));
     return population.slice(0, population_size);
-    
 }
 
 function crossOver(orderA, orderB) {
