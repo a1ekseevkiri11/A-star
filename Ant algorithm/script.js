@@ -1,12 +1,22 @@
 const canvas = document.querySelector('canvas');
-const plane_width = canvas.width;
-const plane_height = canvas.height;
-const ctx = canvas.getContext('2d');
+const ctx = canvas.getContext("2d");
+const bodySize = document.body.getBoundingClientRect();
+if(bodySize.width <=450){
+    var size_matrix = Math.min(bodySize.width, bodySize.height) * 0.7;
+}
+else if(bodySize.width <=900){
+    var size_matrix = Math.min(bodySize.width, bodySize.height) * 0.8;
+}
+else{
+    var size_matrix = Math.min(bodySize.width, bodySize.height) * 0.9;
+}
+canvas.setAttribute('width',size_matrix);
+canvas.setAttribute('height', size_matrix);
 
 
-const alpha = 1;
-const beta = 2;
-const change_pheromon = 0.6;
+const alpha = 2;
+const beta = 5;
+const change_pheromon = 0.2;
 
 
 let cities = [];
@@ -28,7 +38,7 @@ canvas.addEventListener('click', (event) => {
  }
 
  function drawResult(best_way, color) {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.clearRect(0, 0, size_matrix, size_matrix);
     ctx.beginPath();
     ctx.moveTo(cities[best_way[0]][0], cities[best_way[0]][1]);
     for (let i = 1; i < best_way.length; i++) {
@@ -47,11 +57,10 @@ canvas.addEventListener('click', (event) => {
  }
 
  function clearMap() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.clearRect(0, 0, size_matrix, size_matrix);
     cities = [];
     pheromones = [];
     distances = [];
-    pheromones = [];
 }
 
 function distance(point_1, point_2) { 
@@ -84,9 +93,6 @@ function chooseNextCity(visited) {
         probabilities.push([j, prob]);
     }
     probabilities.forEach(element => element[1] /= summ);
-    // for(let i = 0; i < probabilities.length; i++) {
-    //     probabilities[i][1] /= summ;
-    // }
     let random = Math.random();
     summ = 0;
     for(let i = 0; i < probabilities.length; i++) {
@@ -108,7 +114,7 @@ async function antAlgorithm() {
         pheromones[i] = new Array(cities.length);
         for(let j = 0; j < cities.length; j++) {
             distances[i][j] = distance(cities[i], cities[j]);
-            pheromones[i][j] = 0.2;
+            pheromones[i][j] = 1;
         }
     }
     let best_way = null;
@@ -116,7 +122,7 @@ async function antAlgorithm() {
     let count = 0;
     let previous_best_way;
     for(let iteration = 0; iteration < 100000; iteration++) {
-        for(let ant = 0; ant < cities.length * 50; ant++) {
+        for(let ant = 0; ant < cities.length * 2; ant++) {
             let start = Math.floor(Math.random() * cities.length);
             let way = [start];
             let visited = [start];
@@ -126,7 +132,6 @@ async function antAlgorithm() {
                 visited.push(next_city);
             }
             let length = allDistanceForPath(way);
-            // console.log(length);
             if(length < best_length) {
                 best_length = length;
                 best_way = way;
@@ -145,10 +150,10 @@ async function antAlgorithm() {
         if(previous_best_way == best_way) {
             count++;
         }
-        else{
+        else {
             count = 0;
         }
-        if(count > cities.length * 3) {
+        if(count > 75) {
             break;
         }
         previous_best_way = best_way;
@@ -156,4 +161,5 @@ async function antAlgorithm() {
         drawResult(best_way, 'red');
     }
     drawResult(best_way, 'green');
+    alert("Путь найден!");
 }

@@ -20,10 +20,10 @@ if(bodySize.width <=450){
     var size_matrix = Math.min(bodySize.width, bodySize.height) * 0.7;
 }
 else if(bodySize.width <=900){
-    var size_matrix = Math.min(bodySize.width, bodySize.height) * 1;
+    var size_matrix = Math.min(bodySize.width, bodySize.height) * 0.8;
 }
 else{
-    var size_matrix = Math.min(bodySize.width, bodySize.height) * 1.5;
+    var size_matrix = Math.min(bodySize.width, bodySize.height) * 0.9;
 }
 canvas.setAttribute('width',size_matrix);
 canvas.setAttribute('height', size_matrix);

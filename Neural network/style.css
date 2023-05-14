@@ -67,7 +67,7 @@ body{
 	display: block;
 }
 
-@media (min-width: 768px) {
+@media (min-width: 900px) {
     .dropdown-content a:hover {background-color: #ab83ec;}
     .dropdown:hover .dropdown-content {display: block;}
 }

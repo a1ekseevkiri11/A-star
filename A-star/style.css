@@ -106,7 +106,7 @@ body{
     }
 }
 
-@media (min-width: 768px) {
+@media (min-width: 900px) {
     .dropdown-content a:hover {background-color: #ab83ec;}
     .dropdown:hover .dropdown-content {display: block;}
 }
@@ -116,11 +116,5 @@ body{
     display: flex;
     justify-content: center;
     margin-bottom: 20px;
-}
-
-
-.canvas{
-    border: 10px;
-    color: black;
 }
 

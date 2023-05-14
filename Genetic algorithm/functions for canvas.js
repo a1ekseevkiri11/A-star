@@ -35,18 +35,18 @@ function updatePoint(){
     }
 }
 
-function connectLines(point1, point2){
+function connectLines(point1, point2, color){
     plane.beginPath();
     plane.lineWidth = connecting_line_thickness;
-    plane.strokeStyle = connecting_line_color;
+    plane.strokeStyle =  color;
     plane.moveTo(point1.x, point1.y);
     plane.lineTo(point2.x, point2.y);
     plane.stroke();
 }
 
-function connectLinesPath(array){
+function connectLinesPath(array, color){
     for(let i = 0; i < array.length - 1; i++){
-        connectLines(cities[array[i]], cities[array[i + 1]]);
+        connectLines(cities[array[i]], cities[array[i + 1]], color);
     }
-    connectLines(cities[array[0]], cities[array[array.length - 1]]);
+    connectLines(cities[array[0]], cities[array[array.length - 1]], color);
 }
