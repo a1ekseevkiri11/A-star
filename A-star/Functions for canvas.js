@@ -49,10 +49,11 @@ function createTableMarkup() {
         plane.lineTo(cell_size * n, y);
         y += cell_size;
     }
+    clearMapOfPath();
     plane.stroke();
 }
 
-function clearMapOfPath(){
+function clearMapOfPath() {
     for (let i = 0; i < n; i++){
         for (let j = 0; j < n; j++){
             if (!matrix[i][j]){

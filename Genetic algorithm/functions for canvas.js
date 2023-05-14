@@ -19,13 +19,13 @@ function drawAPoint(point){
 }
 
 function clearMap() {
-    plane.clearRect(0, 0, width_plane, height_plane);
+    plane.clearRect(0, 0, size_matrix, size_matrix);
     cities = [];
     number_of_cities = 0;
 }
 
 function mapUpdate(){
-    plane.clearRect(0, 0, width_plane, height_plane);
+    plane.clearRect(0, 0, size_matrix, size_matrix);
     updatePoint();
 }
 

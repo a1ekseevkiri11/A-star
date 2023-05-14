@@ -15,8 +15,18 @@ const passed_cells_color = "DarkGray";
 
 const canvas = document.querySelectorAll("canvas")[0];
 const plane = canvas.getContext("2d");
-
-const size_matrix = 800;
+const bodySize = document.body.getBoundingClientRect();
+if(bodySize.width <=450){
+    var size_matrix = Math.min(bodySize.width, bodySize.height) * 0.7;
+}
+else if(bodySize.width <=900){
+    var size_matrix = Math.min(bodySize.width, bodySize.height) * 1;
+}
+else{
+    var size_matrix = Math.min(bodySize.width, bodySize.height) * 1.5;
+}
+canvas.setAttribute('width',size_matrix);
+canvas.setAttribute('height', size_matrix);
 
 let n;//размер таблицы
 let cell_size;//размер ячейки(клеточки)

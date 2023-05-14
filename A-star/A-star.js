@@ -29,11 +29,8 @@ function Queue() {
     }
 }
 
-function heuristic(cur, finish, choice_of_heuristics) {
-    if(choice_of_heuristics == 0){
-        return Math.max(Math.abs(finish[0] - cur[0]), Math.abs(finish[1] - cur[1]));//Расстояние Чебышева
-    }
-    return Math.abs(finish[0] - cur[0]) + Math.abs(finish[1] - cur[1]);//манхэттенское расстояние
+function heuristic(cur, finish) {
+    return Math.max(Math.abs(finish[0] - cur[0]), Math.abs(finish[1] - cur[1]));//Расстояние Чебышева
 }
 
 function getNeigbors(cur, matrix, G) {
@@ -72,7 +69,6 @@ async function aStar() {
         alert("Введите все данные!");
         return;
     }
-    const choice_of_heuristics = document.querySelector('input[name="heuristics"]:checked').value;
     clearMapOfPath();
     let queue = new Queue();
     let GScores = getMatrix(-1);
@@ -86,7 +82,7 @@ async function aStar() {
             parents[i][j][1] = -1;
         }
     }
-    queue.add([start, heuristic(start, finish, choice_of_heuristics)]);
+    queue.add([start, heuristic(start, finish)]);
     while (!queue.isEmpty()) {
         let current = queue.takeFirst();
         if (current[0][0] === finish[0] && current[0][1] === finish[1]) {
@@ -106,7 +102,7 @@ async function aStar() {
                 parents[nX][nY][0] = cX;
                 parents[nX][nY][1] = cY;
                 GScores[nX][nY] = GScores[cX][cY] + 1;
-                queue.add([neigbor, GScores[nX][nY] + heuristic(neigbor, finish, choice_of_heuristics)]);
+                queue.add([neigbor, GScores[nX][nY] + heuristic(neigbor, finish)]);
             }
         }
     }

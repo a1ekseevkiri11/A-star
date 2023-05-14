@@ -1,16 +1,28 @@
 document.getElementById("geneticAlgorithm").addEventListener("click", geneticAlgorithm);
 
-const point_color = "black";
-const point_radius = 10;
-const connecting_line_thickness = 3;
-const connecting_line_color = "blue";
-const update_time = 5;
 
 
 const canvas = document.getElementById("canvas");
 const plane = canvas.getContext("2d");
-const width_plane = canvas.width;
-const height_plane = canvas.height;
+const bodySize = document.body.getBoundingClientRect();
+if(bodySize.width <=450){
+    var size_matrix = Math.min(bodySize.width, bodySize.height) * 0.7;
+}
+else if(bodySize.width <=900){
+    var size_matrix = Math.min(bodySize.width, bodySize.height) * 1;
+}
+else{
+    var size_matrix = Math.min(bodySize.width, bodySize.height) * 1.5;
+}
+canvas.setAttribute('width',size_matrix);
+canvas.setAttribute('height', size_matrix);
+
+
+const point_color = "black";
+const connecting_line_color = "blue";
+const point_radius = 10;
+const connecting_line_thickness = 3;
+const update_time = 5;
 
 
 const mutation_rate = 0.05;

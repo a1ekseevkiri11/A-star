@@ -52,6 +52,8 @@ body{
 
 .nav_link:hover {background-color: #ac83ec;}
 
+
+
 #links_to_algorithms{
     display: flex;
     justify-content: space-evenly;

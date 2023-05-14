@@ -26,7 +26,6 @@ function createTable() {
   }
   container.innerHTML = "";
   container.appendChild(table);
-  
 }
 
 function createMatrix(){
