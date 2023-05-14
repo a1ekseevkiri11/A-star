@@ -53,6 +53,7 @@ function generateLabyrinth(){
 		const index = Math.floor(Math.random() * array.length);
 		return array[index];
 	}
+	
 
 	function setField (x, y, value) {
 		if (x < 0 | x >= n | y < 0 | y >= n) {
