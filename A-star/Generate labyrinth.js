@@ -71,41 +71,41 @@ function generateLabyrinth(){
 	function moveRemoving() {
 		const directs = [];
 		if (removing.x > 0) {
-			directs.push('l');
+			directs.push("l");
 		};
 		if (removing.x < n - 2) {
-			directs.push('r');
+			directs.push("r");
 		};	
 		if (removing.y > 0) {
-			directs.push('u');
+			directs.push("u");
 		};
 		if (removing.y < n - 2) {
-			directs.push('d');
+			directs.push("d");
 		};
 		const direct = getRandomFrom(directs);
 		switch (direct) {
-			case 'l':
+			case "l":
 				if (getField(removing.x - 2, removing.y) === 1) {
 					setField(removing.x - 1, removing.y, 0);
 					setField(removing.x - 2, removing.y, 0);
 				};
 				removing.x -= 2;
 				break;
-			case 'r':
+			case "r":
 				if (getField(removing.x + 2, removing.y) === 1) {
 					setField(removing.x + 1, removing.y, 0);
 					setField(removing.x + 2, removing.y, 0);
 				};
 				removing.x += 2;
 				break;
-			case 'u':
+			case "u":
 				if (getField(removing.x, removing.y - 2) === 1) {
 					setField(removing.x, removing.y - 1, 0);
 					setField(removing.x, removing.y - 2, 0);
 				};
 				removing.y -= 2
 				break;
-			case 'd':
+			case "d":
 				if (getField(removing.x, removing.y + 2) === 1) {
 					setField(removing.x, removing.y + 1, 0);
 					setField(removing.x, removing.y + 2, 0);
