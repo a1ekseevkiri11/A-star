@@ -1,0 +1,122 @@
+html{
+	margin:0;
+	padding: 0;
+    box-sizing: border-box;
+}
+
+*,*::before, *::after{
+    box-sizing: inherit;
+}
+
+body{
+	margin: 0;
+    padding: 0;
+    /* overflow: hidden; */
+    background-color: var(--background-color);
+}
+
+:root{
+    --header-text-color: #ffffff;
+    --button-text-color: #ffffff;
+    --background-button-color: #c3b3ff;
+    --background-color: #000000;
+}
+
+#header{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 10vh;
+    margin-bottom: 50px;
+}
+
+#home{
+	font-family: 'Oswald', sans-serif;
+    font-weight:800;
+    font-size: 80px;
+    color: var(--header-text-color);
+	text-decoration: none;
+}
+
+.dropdown {
+	position: relative;
+	display: flex;
+	justify-content: center;
+}
+
+.dropdown-content {
+	margin-top: 110px;
+	display: none;
+	position: absolute;
+	z-index: 1;
+	background-color: #ffffff00;
+}
+
+
+.dropdown-content a {
+	text-align: center;
+	padding: 12px 16px;
+	font-family: 'Oswald', sans-serif;
+    font-weight:400;
+	font-size: 20px;
+	background-color: var(--background-button-color);
+	color: var(--button-text-color);
+	text-decoration: none;
+	border-radius: 15px;
+	margin-bottom: 20px;
+	display: block;
+}
+
+
+.nav_link {
+    margin-left: 5px;
+    margin-bottom: 10px;
+    display: flex;
+    padding: 16px 24px;
+    text-decoration: none;
+	border: none;
+    background-color:  var(--background-button-color);
+    font-family: 'Oswald', sans-serif;
+    font-weight:400;
+    font-size: 25px;
+    color: var(--button-text-color);
+    border-radius: 15px;
+}
+
+.nav_link:hover {background-color: #ac83ec;}
+
+@media (max-width: 768px) {
+    .nav_link {
+        margin-bottom: 5px;
+        padding: 6px 8px;
+        font-size: 20px;
+        border-radius: 10px;
+    }
+}
+
+@media (min-width: 900px) {
+    .dropdown-content a:hover {background-color: #ab83ec;}
+    .dropdown:hover .dropdown-content {display: block;}
+}
+
+#table{
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+#canvas {
+    background-color: white;
+}
+
+.choise {
+    display: flex;
+    justify-content: center;
+}
+
+.main{
+    width:100%;
+    display: flex;
+    justify-content: center;
+}

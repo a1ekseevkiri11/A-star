@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clustering Algorithm</title>
+    <link rel="stylesheet" href="style.css">
+    
+<body>
+    <header id="header">
+        <div class="dropdown">
+          <a id="home" href="/index.html">ПК</a>
+          <div class="dropdown-content">
+            <a href="/A-star/index.html">А*</a>
+            <a href="/Clustering/index.html">Алгоритм кластеризации</a>
+            <a href="/Genetic algorithm/index.html">Генетический алгоритм</a>
+            <a href="/Ant algorithm/index.html">Муравьиный алгоритм</a>
+            <a href="/Decision tree">Дерево решений</a>
+            <a href="/Neural network/index.html">Нейронная сеть</a>
+          </div>
+        </div>
+    </header>
+    <div class = "choise">
+        <button class = "K-means nav_link">K-means</button>
+        <button class = "DBSCAN nav_link">DBSCAN</button>
+        <button class = "иерархия nav_link">Иерархическая кластеризация</button>
+    </div>
+    <div class = "K-meansInputs p">
+        <div class="main">
+            <button class = "nav_link" onclick = "createCentroids()">Создать центр кластера</button>
+            <button class = "nav_link" onclick = "KMeans()">Начать алгоритм</button>
+            <button class = "nav_link" onclick = "clearMap()">Очистить карту</button>
+        </div>
+    </div>
+    <div class = "DBSCANInptus p">
+        <div class="main">
+            <button class = "nav_link" onclick = "DBSCAN()">Начать алгоритм</button>
+            <button class = "nav_link" onclick = "clearMap()">Очистить карту</button>
+        </div>
+    </div>
+    <div class = "hierarchicInputs p">
+        <div class="main">
+            <input class = "nav_link" id = "clustersNumber" type="number" min = 1 max = 17>
+            <button class = "nav_link" onclick = "hierarchicalClustering()">Начать алгоритм</button>
+            <button class = "nav_link" onclick = "clearMap()">Очистить карту</button>
+        </div>
+    </div>
+    <div id = "table">
+        <canvas id = "canvas" width="800" height="800"></canvas>
+        <script src = "K-means.js"></script>
+        <script src = "DBSCAN.js"></script>
+        <script src = "canvas.js"></script>
+        <script src="hierarchical clustering.js"></script>
+    </div>
+</head>
+</body>
+</html>
