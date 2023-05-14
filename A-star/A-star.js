@@ -30,6 +30,9 @@ function Queue() {
 }
 
 function heuristic(cur, finish) {
+    if(cur[2] === 1){
+        return Math.max(Math.abs(finish[0] - cur[0]), Math.abs(finish[1] - cur[1])) * 1.4;//Расстояние Чебышева
+    }
     return Math.max(Math.abs(finish[0] - cur[0]), Math.abs(finish[1] - cur[1]));//Расстояние Чебышева
 }
 
@@ -38,28 +41,28 @@ function getNeigbors(cur, matrix, G) {
     let x = cur[0][0];
     let y = cur[0][1];
     if (y != n - 1 && !matrix[x][y + 1] && G[x][y + 1] === -1) {
-        return_neighbours.push([x, y + 1]);
+        return_neighbours.push([x, y + 1, 0]);
     }
     if (x != n - 1 && !matrix[x + 1][y] && G[x + 1][y] === -1) {
-        return_neighbours.push([x + 1, y]);
+        return_neighbours.push([x + 1, y, 0]);
     }
     if (x != 0 && !matrix[x - 1][y] && G[x - 1][y] === -1) {
-        return_neighbours.push([x - 1, y]);
+        return_neighbours.push([x - 1, y, 0]);
     }
     if (y != 0 && !matrix[x][y - 1] && G[x][y - 1] === -1) {
-        return_neighbours.push([x, y - 1]);
+        return_neighbours.push([x, y - 1, 0]);
     }
     if (x > 0 && y > 0 && !matrix[x - 1][y - 1] && G[x - 1][y - 1] === -1) {
-        return_neighbours.push([x - 1, y - 1]);
+        return_neighbours.push([x - 1, y - 1, 1]);
     }
     if (x < n - 1 && y < n - 1 && !matrix[x + 1][y + 1] && G[x + 1][y + 1] === -1) {
-        return_neighbours.push([x + 1, y + 1]);
+        return_neighbours.push([x + 1, y + 1, 1]);
     }
     if (x > 0 && y < n - 1 && !matrix[x - 1][y + 1] && G[x - 1][y + 1] === -1) {
-        return_neighbours.push([x - 1, y + 1]);
+        return_neighbours.push([x - 1, y + 1, 1]);
     }
     if (x < n - 1 && y > 0 && !matrix[x + 1][y - 1] && G[x + 1][y - 1] === -1) {
-        return_neighbours.push([x + 1, y - 1]);
+        return_neighbours.push([x + 1, y - 1, 1]);
     }
     return return_neighbours;
 }
@@ -71,8 +74,8 @@ async function aStar() {
     }
     clearMapOfPath();
     let queue = new Queue();
-    let GScores = getMatrix(-1);
-    GScores[start[0]][start[1]] = 0;
+    let g_scores = getMatrix(-1);
+    g_scores[start[0]][start[1]] = 0;
     let parents = [];//массив родителей(для окраски самого короткого пути)
     for (let i = 0; i < n; i++) {
         parents[i] = new Array(n)
@@ -88,7 +91,7 @@ async function aStar() {
         if (current[0][0] === finish[0] && current[0][1] === finish[1]) {
             break;
         }
-        let neighbours = getNeigbors(current, matrix, GScores);
+        let neighbours = getNeigbors(current, matrix, g_scores);
         for (let i = 0; i < neighbours.length; i++) {
             let neigbor = neighbours[i];
             drawACircle(neigbor[1], neigbor[0], motion_animation_color);
@@ -98,11 +101,11 @@ async function aStar() {
             let nY = neigbor[1];
             let cX = current[0][0];
             let cY = current[0][1];
-            if (GScores[nX, nY] === -1 || GScores[cX][cY] + 1 > GScores[nX][nY]) {
+            if (g_scores[nX, nY] === -1 | g_scores[cX][cY] + 1 > g_scores[nX][nY]) {
                 parents[nX][nY][0] = cX;
                 parents[nX][nY][1] = cY;
-                GScores[nX][nY] = GScores[cX][cY] + 1;
-                queue.add([neigbor, GScores[nX][nY] + heuristic(neigbor, finish)]);
+                g_scores[nX][nY] = g_scores[cX][cY] + 1;
+                queue.add([neigbor, g_scores[nX][nY] + heuristic(neigbor, finish)]);
             }
         }
     }
