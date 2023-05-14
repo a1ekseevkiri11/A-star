@@ -29,13 +29,6 @@ function Queue() {
     }
 }
 
-function heuristic(cur, finish) {
-    if(cur[2] === 1){
-        return Math.max(Math.abs(finish[0] - cur[0]), Math.abs(finish[1] - cur[1])) * 1.4;//Расстояние Чебышева
-    }
-    return Math.max(Math.abs(finish[0] - cur[0]), Math.abs(finish[1] - cur[1]));//Расстояние Чебышева
-}
-
 function getNeigbors(cur, matrix, G) {
     let return_neighbours = [];
     let x = cur[0][0];
@@ -97,15 +90,15 @@ async function aStar() {
             drawACircle(neigbor[1], neigbor[0], motion_animation_color);
             await wait();
             drawACircle(neigbor[1], neigbor[0], passed_cells_color);
-            let nX = neigbor[0];
-            let nY = neigbor[1];
-            let cX = current[0][0];
-            let cY = current[0][1];
-            if (g_scores[nX, nY] === -1 | g_scores[cX][cY] + 1 > g_scores[nX][nY]) {
-                parents[nX][nY][0] = cX;
-                parents[nX][nY][1] = cY;
-                g_scores[nX][nY] = g_scores[cX][cY] + 1;
-                queue.add([neigbor, g_scores[nX][nY] + heuristic(neigbor, finish)]);
+            let neibor_X = neigbor[0];
+            let neibor_Y = neigbor[1];
+            let current_X = current[0][0];
+            let current_Y = current[0][1];
+            if (g_scores[neibor_X, neibor_Y] === -1 | g_scores[current_X][current_Y] + 1 > g_scores[neibor_X][neibor_Y]) {
+                parents[neibor_X][neibor_Y][0] = current_X;
+                parents[neibor_X][neibor_Y][1] = current_Y;
+                g_scores[neibor_X][neibor_Y] = g_scores[current_X][current_Y] + 1;
+                queue.add([neigbor, g_scores[neibor_X][neibor_Y] + heuristic(neigbor, finish)]);
             }
         }
     }
@@ -121,6 +114,13 @@ async function aStar() {
     else {
         alert("Пути нет!");
     }
+}
+
+function heuristic(cur, finish) {
+    if(cur[2] === 1){
+        return Math.max(Math.abs(finish[0] - cur[0]), Math.abs(finish[1] - cur[1])) * 1.4;//Расстояние Чебышева
+    }
+    return Math.max(Math.abs(finish[0] - cur[0]), Math.abs(finish[1] - cur[1]));//Расстояние Чебышева
 }
 
 //стрелочная функция ожидания
