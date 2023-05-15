@@ -14,12 +14,12 @@ if(bodySize.width <= 450){
     var connecting_line_thickness = 2;
 }
 else if(bodySize.width <= 900){
-    var size_matrix = Math.min(bodySize.width, bodySize.height) * 0.85;
+    var size_matrix = Math.min(bodySize.width, bodySize.height) * 0.8;
     var point_radius = 6;
     var connecting_line_thickness = 2;
 }
 else{
-    var size_matrix = Math.min(bodySize.width, bodySize.height) * 0.8;
+    var size_matrix = Math.min(bodySize.width, bodySize.height) * 0.6;
     var point_radius = 10;
     var connecting_line_thickness = 3;
 }
